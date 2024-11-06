@@ -1,0 +1,21 @@
+[submodule "submodules/raisimLib"]
+	path = submodules/raisimLib
+	url = https://github.com/kamvlad/raisimLib.git
+[submodule "submodules/rl_locomotion_go1"]
+	path = submodules/rl_locomotion_go1
+	url = https://github.com/kamvlad/rl_locomotion_go1.git
+[submodule "submodules/free-dog-sdk"]
+	path = submodules/free-dog-sdk
+	url = https://github.com/kamvlad/free-dog-sdk.git
+[submodule "submodules/mujoco"]
+	path = submodules/mujoco
+	url = https://github.com/kamvlad/mujoco.git
+[submodule "submodules/unitree_sdk2"]
+	path = submodules/unitree_sdk2
+	url = https://github.com/kamvlad/unitree_sdk2.git
+[submodule "submodules/unitree_sdk2_python"]
+	path = submodules/unitree_sdk2_python
+	url = https://github.com/kamvlad/unitree_sdk2_python.git
+[submodule "submodules/unitree_mujoco"]
+	path = submodules/unitree_mujoco
+	url = https://github.com/kamvlad/unitree_mujoco.git
