@@ -1,4 +1,5 @@
 import typing
+from collections import deque
 import time
 from threading import Thread, Lock
 
@@ -15,7 +16,7 @@ class Simulation:
         self.mj_model = mujoco.MjModel.from_xml_path(config.ROBOT_SCENE)
         self.mj_model.opt.timestep = config.SIMULATE_DT
         self.mj_data = mujoco.MjData(self.mj_model)
-        self.states = []
+        self.states = deque(maxlen=100)
         self.locker = Lock()
         self.cmd = None
         self.config = config
@@ -46,7 +47,7 @@ class Simulation:
                 mujoco.mj_step(self.mj_model, self.mj_data)
                 
             if send_step_start is None or (time.perf_counter() - send_step_start) >= self.config.SEND_STATE_DT:
-                state = self.make_state()                    
+                state = self.make_state()
                 self.states.append((time.time_ns(), state))
                 send_step_start = time.perf_counter()
             
@@ -66,8 +67,7 @@ class Simulation:
         self.cmd = cmd
 
     def get_states(self) -> typing.List[typing.Tuple[int, lowState]]:
-        states, self.states = self.states, []
-        return states
+        return [self.states.popleft() for _  in range(len(self.states))]
 
     def make_state(self):
         rslt = lowState()
@@ -80,7 +80,7 @@ class Simulation:
             rslt.motorState[i].tau_est = self.mj_data.sensordata[
                 i + 2 * self.num_motor
             ]
-
+        
         rslt.imu.quaternion[0] = self.mj_data.sensordata[
             self.dim_motor_sensor + 0
         ]
@@ -117,10 +117,10 @@ class Simulation:
         return rslt
 
     def control(self, cmd: lowCmd):
-         for i in range(self.num_motor):
+        for i in range(self.num_motor):
             mc = cmd.motorCmd.motor(i)
             self.mj_data.ctrl[i] = (
                 mc.tau +
-                mc.kp * (mc.q - self.mj_data.sensordata[i]) +
-                mc.kd * (mc.dq - self.mj_data.sensordata[i + self.num_motor])
+                mc.Kp * (mc.q - self.mj_data.sensordata[i]) +
+                mc.Kd * (mc.dq - self.mj_data.sensordata[i + self.num_motor])
             )
