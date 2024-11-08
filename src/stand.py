@@ -16,10 +16,10 @@ from freedogs2py_bridge import MujocoConnectionProxy
 config.ENABLE_SIMULATION = True
 
 sim = simulation.Simulation(config)
-sim.set_keyframe(2)
+sim.set_keyframe(0)
 
-sim.set_motor_positions([p[0] for p in positions.stand_position()])
-#sim.set_motor_positions(positions.laydown_position())
+#sim.set_motor_positions([p[0] for p in positions.stand_position()])
+#sim.set_motor_positions(positions.laydown_position_2())
 
 connection = MujocoConnectionProxy(sim)
 sim.start()
@@ -35,7 +35,7 @@ def make_position_cmd(position):
 time.sleep(0.2)
 
 
-stand_position = positions.stand_position()
+stand_position = positions.laydown_position_2()
 
 while sim.viewer.is_running():
     cur_state = connection.get_latest_state()

@@ -76,7 +76,7 @@ while sim.viewer.is_running():
             phase = 2
             phase_cycles = 0
             init_position_vec = np.array(utils.get_pos_vector(state))
-        connection.send(make_position_cmd_2(positions.laydown_position_2(), stand_dq, stand_Kp, stand_Kd))
+        connection.send(make_position_cmd(positions.laydown_position_2()))
     elif phase == 2:
         position_step_vec = interpolate(init_position_vec, stand_position_vec, phase_cycles, 500)
         connection.send(make_position_cmd_2(position_step_vec, stand_dq, stand_Kp, stand_Kd))
