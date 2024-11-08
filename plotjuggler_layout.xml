@@ -1,109 +1,109 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <root>
- <tabbed_widget name="Main Window" parent="main_window">
+ <tabbed_widget parent="main_window" name="Main Window">
   <Tab tab_name="q" containers="1">
    <Container>
     <DockSplitter count="1" sizes="1" orientation="-">
      <DockSplitter count="3" sizes="0.333542;0.332915;0.333542" orientation="|">
       <DockSplitter count="4" sizes="0.25;0.25;0.25;0.25" orientation="-">
        <DockArea name="FR_0 (Hip)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
-         <limitY/>
-         <curve color="#1f77b4" name="/state/motors/FR_0/q"/>
-         <curve color="#d62728" name="/command/motors/FR_0/q"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="-0.804000" top="0.914000" left="15.752857" right="25.718678"/>
+         <limitY min="-0.863" max="0.863"/>
+         <curve name="/state/motors/FR_0/q" color="#1f77b4"/>
+         <curve name="/command/motors/FR_0/q" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="FL_0 (Hip)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
-         <limitY/>
-         <curve color="#1f77b4" name="/state/motors/FL_0/q"/>
-         <curve color="#d62728" name="/command/motors/FL_0/q"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.112407" top="0.112407" left="15.752857" right="25.718678"/>
+         <limitY min="-0.863" max="0.863"/>
+         <curve name="/state/motors/FL_0/q" color="#1f77b4"/>
+         <curve name="/command/motors/FL_0/q" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="RR_0 (Hip)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
-         <limitY/>
-         <curve color="#1f77b4" name="/state/motors/RR_0/q"/>
-         <curve color="#d62728" name="/command/motors/RR_0/q"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="-0.112550" top="-0.112550" left="15.752857" right="25.718678"/>
+         <limitY min="-0.863" max="0.863"/>
+         <curve name="/state/motors/RR_0/q" color="#1f77b4"/>
+         <curve name="/command/motors/RR_0/q" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="RL_0 (Hip)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
-         <limitY/>
-         <curve color="#1f77b4" name="/state/motors/RL_0/q"/>
-         <curve color="#d62728" name="/command/motors/RL_0/q"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.112557" top="0.112557" left="15.752857" right="25.718678"/>
+         <limitY min="-0.863" max="0.863"/>
+         <curve name="/state/motors/RL_0/q" color="#1f77b4"/>
+         <curve name="/command/motors/RL_0/q" color="#d62728"/>
         </plot>
        </DockArea>
       </DockSplitter>
       <DockSplitter count="4" sizes="0.25;0.25;0.25;0.25" orientation="-">
        <DockArea name="FR_1 (Thig)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
-         <limitY/>
-         <curve color="#1f77b4" name="/state/motors/FR_1/q"/>
-         <curve color="#d62728" name="/command/motors/FR_1/q"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="1.712412" top="1.712412" left="15.752857" right="25.718678"/>
+         <limitY min="-0.686" max="4.501"/>
+         <curve name="/state/motors/FR_1/q" color="#1f77b4"/>
+         <curve name="/command/motors/FR_1/q" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="FL_1 (Thig)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
-         <limitY/>
-         <curve color="#1f77b4" name="/state/motors/FL_1/q"/>
-         <curve color="#d62728" name="/command/motors/FL_1/q"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="1.712411" top="1.712411" left="15.752857" right="25.718678"/>
+         <limitY min="-0.686" max="4.501"/>
+         <curve name="/state/motors/FL_1/q" color="#1f77b4"/>
+         <curve name="/command/motors/FL_1/q" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="RR_1 (Thig)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
-         <limitY/>
-         <curve color="#1f77b4" name="/state/motors/RR_1/q"/>
-         <curve color="#d62728" name="/command/motors/RR_1/q"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="1.712420" top="1.712420" left="15.752857" right="25.718678"/>
+         <limitY min="-0.686" max="4.501"/>
+         <curve name="/state/motors/RR_1/q" color="#1f77b4"/>
+         <curve name="/command/motors/RR_1/q" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="RL_1 (Thig)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
-         <limitY/>
-         <curve color="#1f77b4" name="/state/motors/RL_1/q"/>
-         <curve color="#d62728" name="/command/motors/RL_1/q"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="1.712419" top="1.712419" left="15.752857" right="25.718678"/>
+         <limitY min="-0.686" max="4.501"/>
+         <curve name="/state/motors/RL_1/q" color="#1f77b4"/>
+         <curve name="/command/motors/RL_1/q" color="#d62728"/>
         </plot>
        </DockArea>
       </DockSplitter>
       <DockSplitter count="4" sizes="0.25;0.25;0.25;0.25" orientation="-">
-      <DockArea name="FR_2 (Calf)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
-         <limitY/>
-         <curve color="#1f77b4" name="/state/motors/FR_2/q"/>
-         <curve color="#d62728" name="/command/motors/FR_2/q"/>
+       <DockArea name="FR_2 (Calf)">
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="-0.887495" top="-0.887495" left="15.752857" right="25.718678"/>
+         <limitY  min="-2.818" max="-0.888"/>
+         <curve name="/state/motors/FR_2/q" color="#1f77b4"/>
+         <curve name="/command/motors/FR_2/q" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="FL_2 (Calf)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
-         <limitY/>
-         <curve color="#1f77b4" name="/state/motors/FL_2/q"/>
-         <curve color="#d62728" name="/command/motors/FL_2/q"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="-0.887495" top="-0.887495" left="15.752857" right="25.718678"/>
+         <limitY  min="-2.818" max="-0.888"/>
+         <curve name="/state/motors/FL_2/q" color="#1f77b4"/>
+         <curve name="/command/motors/FL_2/q" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="RR_2 (Calf)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
-         <limitY/>
-         <curve color="#1f77b4" name="/state/motors/RR_2/q"/>
-         <curve color="#d62728" name="/command/motors/RR_2/q"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="-0.887495" top="-0.887495" left="15.752857" right="25.718678"/>
+         <limitY  min="-2.818" max="-0.888"/>
+         <curve name="/state/motors/RR_2/q" color="#1f77b4"/>
+         <curve name="/command/motors/RR_2/q" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="RL_2 (Calf)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
-         <limitY/>
-         <curve color="#1f77b4" name="/state/motors/RL_2/q"/>
-         <curve color="#d62728" name="/command/motors/RL_2/q"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="-0.887495" top="-0.887495" left="15.752857" right="25.718678"/>
+         <limitY  min="-2.818" max="-0.888"/>
+         <curve name="/state/motors/RL_2/q" color="#1f77b4"/>
+         <curve name="/command/motors/RL_2/q" color="#d62728"/>
         </plot>
        </DockArea>
       </DockSplitter>
@@ -117,103 +117,213 @@
      <DockSplitter count="3" sizes="0.333542;0.332915;0.333542" orientation="|">
       <DockSplitter count="4" sizes="0.25;0.25;0.25;0.25" orientation="-">
        <DockArea name="FR_0 (Hip)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
          <limitY/>
-         <curve color="#1f77b4" name="/state/motors/FR_0/dq"/>
-         <curve color="#d62728" name="/command/motors/FR_0/dq"/>
+         <curve name="/state/motors/FR_0/dq" color="#1f77b4"/>
+         <curve name="/command/motors/FR_0/dq" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="FL_0 (Hip)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
          <limitY/>
-         <curve color="#1f77b4" name="/state/motors/FL_0/dq"/>
-         <curve color="#d62728" name="/command/motors/FL_0/dq"/>
+         <curve name="/state/motors/FL_0/dq" color="#1f77b4"/>
+         <curve name="/command/motors/FL_0/dq" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="RR_0 (Hip)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
          <limitY/>
-         <curve color="#1f77b4" name="/state/motors/RR_0/dq"/>
-         <curve color="#d62728" name="/command/motors/RR_0/dq"/>
+         <curve name="/state/motors/RR_0/dq" color="#1f77b4"/>
+         <curve name="/command/motors/RR_0/dq" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="RL_0 (Hip)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
          <limitY/>
-         <curve color="#1f77b4" name="/state/motors/RL_0/dq"/>
-         <curve color="#d62728" name="/command/motors/RL_0/dq"/>
+         <curve name="/state/motors/RL_0/dq" color="#1f77b4"/>
+         <curve name="/command/motors/RL_0/dq" color="#d62728"/>
         </plot>
        </DockArea>
       </DockSplitter>
       <DockSplitter count="4" sizes="0.25;0.25;0.25;0.25" orientation="-">
        <DockArea name="FR_1 (Thig)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
          <limitY/>
-         <curve color="#1f77b4" name="/state/motors/FR_1/dq"/>
-         <curve color="#d62728" name="/command/motors/FR_1/dq"/>
+         <curve name="/state/motors/FR_1/dq" color="#1f77b4"/>
+         <curve name="/command/motors/FR_1/dq" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="FL_1 (Thig)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="-0.000000" top="-0.000000" left="15.752857" right="25.718678"/>
          <limitY/>
-         <curve color="#1f77b4" name="/state/motors/FL_1/dq"/>
-         <curve color="#d62728" name="/command/motors/FL_1/dq"/>
+         <curve name="/state/motors/FL_1/dq" color="#1f77b4"/>
+         <curve name="/command/motors/FL_1/dq" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="RR_1 (Thig)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
          <limitY/>
-         <curve color="#1f77b4" name="/state/motors/RR_1/dq"/>
-         <curve color="#d62728" name="/command/motors/RR_1/dq"/>
+         <curve name="/state/motors/RR_1/dq" color="#1f77b4"/>
+         <curve name="/command/motors/RR_1/dq" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="RL_1 (Thig)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="-0.000000" top="-0.000000" left="15.752857" right="25.718678"/>
          <limitY/>
-         <curve color="#1f77b4" name="/state/motors/RL_1/dq"/>
-         <curve color="#d62728" name="/command/motors/RL_1/dq"/>
+         <curve name="/state/motors/RL_1/dq" color="#1f77b4"/>
+         <curve name="/command/motors/RL_1/dq" color="#d62728"/>
         </plot>
        </DockArea>
       </DockSplitter>
       <DockSplitter count="4" sizes="0.25;0.25;0.25;0.25" orientation="-">
-      <DockArea name="FR_2 (Calf)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
+       <DockArea name="FR_2 (Calf)">
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
          <limitY/>
-         <curve color="#1f77b4" name="/state/motors/FR_2/dq"/>
-         <curve color="#d62728" name="/command/motors/FR_2/dq"/>
+         <curve name="/state/motors/FR_2/dq" color="#1f77b4"/>
+         <curve name="/command/motors/FR_2/dq" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="FL_2 (Calf)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="-0.000000" top="-0.000000" left="15.752857" right="25.718678"/>
          <limitY/>
-         <curve color="#1f77b4" name="/state/motors/FL_2/dq"/>
-         <curve color="#d62728" name="/command/motors/FL_2/dq"/>
+         <curve name="/state/motors/FL_2/dq" color="#1f77b4"/>
+         <curve name="/command/motors/FL_2/dq" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="RR_2 (Calf)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
          <limitY/>
-         <curve color="#1f77b4" name="/state/motors/RR_2/dq"/>
-         <curve color="#d62728" name="/command/motors/RR_2/dq"/>
+         <curve name="/state/motors/RR_2/dq" color="#1f77b4"/>
+         <curve name="/command/motors/RR_2/dq" color="#d62728"/>
         </plot>
        </DockArea>
        <DockArea name="RL_2 (Calf)">
-        <plot mode="TimeSeries" style="Lines" flip_x="false" flip_y="false">
-         <range top="0.002817" bottom="-0.115503" right="63.477355" left="53.484475"/>
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="-0.000000" top="-0.000000" left="15.752857" right="25.718678"/>
          <limitY/>
-         <curve color="#1f77b4" name="/state/motors/RL_2/dq"/>
-         <curve color="#d62728" name="/command/motors/RL_2/dq"/>
+         <curve name="/state/motors/RL_2/dq" color="#1f77b4"/>
+         <curve name="/command/motors/RL_2/dq" color="#d62728"/>
+        </plot>
+       </DockArea>
+      </DockSplitter>
+     </DockSplitter>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab tab_name="tauEst" containers="1">
+   <Container>
+    <DockSplitter count="1" sizes="1" orientation="-">
+     <DockSplitter count="3" sizes="0.333542;0.332915;0.333542" orientation="|">
+      <DockSplitter count="4" sizes="0.25;0.25;0.25;0.25" orientation="-">
+       <DockArea name="FR_0 (Hip)">
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
+         <limitY/>
+         <curve name="/state/motors/FR_0/tau_est" color="#1f77b4"/>
+         <curve name="/command/motors/FR_0/tau_est" color="#d62728"/>
+        </plot>
+       </DockArea>
+       <DockArea name="FL_0 (Hip)">
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
+         <limitY/>
+         <curve name="/state/motors/FL_0/tau_est" color="#1f77b4"/>
+         <curve name="/command/motors/FL_0/tau_est" color="#d62728"/>
+        </plot>
+       </DockArea>
+       <DockArea name="RR_0 (Hip)">
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
+         <limitY/>
+         <curve name="/state/motors/RR_0/tau_est" color="#1f77b4"/>
+         <curve name="/command/motors/RR_0/tau_est" color="#d62728"/>
+        </plot>
+       </DockArea>
+       <DockArea name="RL_0 (Hip)">
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
+         <limitY/>
+         <curve name="/state/motors/RL_0/tau_est" color="#1f77b4"/>
+         <curve name="/command/motors/RL_0/tau_est" color="#d62728"/>
+        </plot>
+       </DockArea>
+      </DockSplitter>
+      <DockSplitter count="4" sizes="0.25;0.25;0.25;0.25" orientation="-">
+       <DockArea name="FR_1 (Thig)">
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
+         <limitY/>
+         <curve name="/state/motors/FR_1/tau_est" color="#1f77b4"/>
+         <curve name="/command/motors/FR_1/tau_est" color="#d62728"/>
+        </plot>
+       </DockArea>
+       <DockArea name="FL_1 (Thig)">
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="-0.000000" top="-0.000000" left="15.752857" right="25.718678"/>
+         <limitY/>
+         <curve name="/state/motors/FL_1/tau_est" color="#1f77b4"/>
+         <curve name="/command/motors/FL_1/tau_est" color="#d62728"/>
+        </plot>
+       </DockArea>
+       <DockArea name="RR_1 (Thig)">
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
+         <limitY/>
+         <curve name="/state/motors/RR_1/tau_est" color="#1f77b4"/>
+         <curve name="/command/motors/RR_1/tau_est" color="#d62728"/>
+        </plot>
+       </DockArea>
+       <DockArea name="RL_1 (Thig)">
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="-0.000000" top="-0.000000" left="15.752857" right="25.718678"/>
+         <limitY/>
+         <curve name="/state/motors/RL_1/tau_est" color="#1f77b4"/>
+         <curve name="/command/motors/RL_1/tau_est" color="#d62728"/>
+        </plot>
+       </DockArea>
+      </DockSplitter>
+      <DockSplitter count="4" sizes="0.25;0.25;0.25;0.25" orientation="-">
+       <DockArea name="FR_2 (Calf)">
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
+         <limitY/>
+         <curve name="/state/motors/FR_2/tau_est" color="#1f77b4"/>
+         <curve name="/command/motors/FR_2/tau_est" color="#d62728"/>
+        </plot>
+       </DockArea>
+       <DockArea name="FL_2 (Calf)">
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="-0.000000" top="-0.000000" left="15.752857" right="25.718678"/>
+         <limitY/>
+         <curve name="/state/motors/FL_2/tau_est" color="#1f77b4"/>
+         <curve name="/command/motors/FL_2/tau_est" color="#d62728"/>
+        </plot>
+       </DockArea>
+       <DockArea name="RR_2 (Calf)">
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="0.000000" top="0.000000" left="15.752857" right="25.718678"/>
+         <limitY/>
+         <curve name="/state/motors/RR_2/tau_est" color="#1f77b4"/>
+         <curve name="/command/motors/RR_2/tau_est" color="#d62728"/>
+        </plot>
+       </DockArea>
+       <DockArea name="RL_2 (Calf)">
+        <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
+         <range bottom="-0.000000" top="-0.000000" left="15.752857" right="25.718678"/>
+         <limitY/>
+         <curve name="/state/motors/RL_2/tau_est" color="#1f77b4"/>
+         <curve name="/command/motors/RL_2/tau_est" color="#d62728"/>
         </plot>
        </DockArea>
       </DockSplitter>
@@ -228,7 +338,7 @@
  <!-- - - - - - - - - - - - - - - -->
  <Plugins>
   <plugin ID="DataLoad CSV">
-   <parameters time_axis="" delimiter="0"/>
+   <parameters delimiter="0" time_axis=""/>
   </plugin>
   <plugin ID="DataLoad MCAP"/>
   <plugin ID="DataLoad ROS2 bags">

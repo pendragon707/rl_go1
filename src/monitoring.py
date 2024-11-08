@@ -14,7 +14,8 @@ class Monitoring:
         for no, motorState in enumerate(motorsState[:12]):
             rslt[constants.motors_names[no]] = {
                 'q': motorState.q,
-                'dq': motorState.dq
+                'dq': motorState.dq,
+                'tau_est': motorState.tau_est
             }
 
         return rslt
@@ -26,7 +27,7 @@ class Monitoring:
                 'q': motorCmd.motor(no).q,
                 'dq': motorCmd.motor(no).dq,
                 'Kp': motorCmd.motor(no).Kp,
-                'Kd': motorCmd.motor(no).Kd,
+                'Kd': motorCmd.motor(no).Kd
             }
 
         return rslt
@@ -52,6 +53,4 @@ class Monitoring:
                 'motors': self.motors_cmd_dict(cmd.motorCmd)
             }
         }
-    
-
         self.sock.sendto(cbor2.dumps(data), (self.host, self.port))

@@ -3,11 +3,19 @@ from collections import deque
 import time
 from threading import Thread, Lock
 
+import numpy as np
+
 import mujoco
 import mujoco.viewer
 
 from ucl.lowCmd import lowCmd
 from ucl.lowState import lowState
+
+import constants
+
+
+motor_qpos = {'FL_0': 7, 'FL_1': 8, 'FL_2': 9, 'FR_0': 10, 'FR_1': 11, 'FR_2': 12,
+              'RL_0': 13, 'RL_1': 14, 'RL_2': 15, 'RR_0': 16, 'RR_1': 17, 'RR_2': 18}
 
 
 class Simulation:
@@ -25,6 +33,13 @@ class Simulation:
 
     def set_keyframe(self, key_no: int):
         mujoco.mj_resetDataKeyframe(self.mj_model, self.mj_data, key_no)
+
+    def motor_positions(self):
+        return np.array([self.mj_data.qpos[motor_qpos[name]] for name in constants.motors_names])
+
+    def set_motor_positions(self, motor_positions):
+        for name, qpos_no in motor_qpos.items():
+            self.mj_data.qpos[qpos_no] = motor_positions[constants.motor_name_to_no[name]]
 
     def start(self):
         self.viewer = mujoco.viewer.launch_passive(self.mj_model, self.mj_data)
@@ -44,7 +59,8 @@ class Simulation:
                 self.control(cmd)
             
             with self.locker:
-                mujoco.mj_step(self.mj_model, self.mj_data)
+                if self.config.ENABLE_SIMULATION:
+                    mujoco.mj_step(self.mj_model, self.mj_data)
                 
             if send_step_start is None or (time.perf_counter() - send_step_start) >= self.config.SEND_STATE_DT:
                 state = self.make_state()

@@ -18,10 +18,10 @@ sim.start()
 while sim.viewer.is_running():
     connection.get_latest_state()
     
-    lcmd = lowCmd()
-    mCmdArr = motorCmdArray()
-    mCmdArr.setMotorCmd('FR_1', motorCmd(mode=MotorModeLow.Servo, q=0.0, Kp=3.0))
-    lcmd.motorCmd = mCmdArr
+    # lcmd = lowCmd()
+    # mCmdArr = motorCmdArray()
+    # #mCmdArr.setMotorCmd('FR_1', motorCmd(mode=MotorModeLow.Servo, q=0.0, Kp=3.0))
+    # lcmd.motorCmd = mCmdArr
     
-    connection.send(lcmd)
+    # connection.send(lcmd)
     time.sleep(0.01)
