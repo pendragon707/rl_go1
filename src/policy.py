@@ -1,138 +1,43 @@
-from datetime import datetime
+import config
 
-import os
 import math
 import time
 import torch
-import sys
 import numpy as np
 from collections import deque
+import utils
 
 import time
 import simulation
-
-from ucl.lowCmd import lowCmd
-from ucl.complex import motorCmd, motorCmdArray
-from ucl.enums import MotorModeLow
-
-import config
-import constants
+import command
 import positions
-from freedogs2py_bridge import MujocoConnectionProxy
 
 
-import pickle
+def to_observation(state, last_action = None):
+    obs = []
+    imu_quaternion = state.imu.quaternion  # TODO Check Euler angles from dog
+    obs += utils.quatToEuler(imu_quaternion)[:2]
 
+    for i in range(12):
+        obs.append(state.motorState[i].q)
 
-def quatToEuler(quat):
-    qw, qx, qy, qz = quat
-    # roll (x-axis rotation)
-    sinr_cosp = 2 * (qw * qx + qy * qz)
-    cosr_cosp = 1 - 2 * (qx * qx + qy * qy)
+    for i in range(12):
+        obs.append(state.motorState[i].dq)
 
-    r = []
-    r.append(math.atan2(sinr_cosp, cosr_cosp))
-
-    # pitch (y-axis rotation)
-    sinp = 2 * (qw * qy - qz * qx)
-    if abs(sinp) >= 1:
-    # use 90 degrees if out of range
-        if sinp > 0:
-            r.append(math.pi / 2)
-        else:
-            r.append(-math.pi / 2)
+    if last_action is not None:
+        obs += last_action.tolist()
     else:
-        r.append(math.asin(sinp))
+        obs += [0] * 12
 
-    # yaw (z-axis rotation)
-    siny_cosp = 2 * (qw * qz + qx * qy)
-    cosy_cosp = 1 - 2 * (qy * qy + qz * qz)
-    r.append(math.atan2(siny_cosp, cosy_cosp))
-    return r
-
-
-class GO1Connection:
-
-    def __init__(self):
-        self.conn = unitreeConnection(LOW_WIRED_DEFAULTS)
-        self.conn.startRecv()
-
-    def sendInitCmd(self):
-        lcmd = lowCmd()
-        cmd_bytes = lcmd.buildCmd(debug=False)
-        self.conn.send(cmd_bytes)
-        time.sleep(0.2)
-
-    def getState(self):
-        data = self.conn.getData()
-        if len(data) > 0:
-            lstate = lowState()
-            lstate.parseData(data[-1])
-            return lstate
-
-        return None
-
-    def getObservation(self, state, last_action = None):
-        obs = []
-
-        imu_quaternion = state.imu.quaternion  # TODO Check Euler angles from dog
-        obs += quatToEuler(imu_quaternion)[:2]
-
-        for i in range(12):
-            obs.append(state.motorState[i].q)
-
-        for i in range(12):
-            obs.append(state.motorState[i].dq)
-
-        if last_action is not None:
-           obs += last_action.tolist()
-        else:
-           obs += [0] * 12
-
-        obs += [0] * 4  # delta speed_vec
-        return np.array(obs, dtype=np.float32)
-
-    def positionAction(self, position, pgain, dgain):
-        lstate = lowState()
-        lcmd = lowCmd()
-
-        mCmdArr = motorCmdArray()
-
-        clamps = [
-            (-0.804595, 0.914805),
-            (-0.676763, 3.938925),
-            (-2.708668, -0.872154),
-            (-0.872175, 0.840383),
-            (-0.669436, 3.948008),
-            (-2.782182, -0.881157),
-            (-0.824942, 0.897850),
-            (-0.685604, 4.574027),
-            (-2.781213, -0.873002),
-            (-0.899243, 0.810772),
-            (-0.662957, 4.552348),
-            (-2.791306, -0.877725)
-        ]
-
-        for i, name in enumerate(motors_names):
-            p = position[0][i]
-            if p < clamps[i][0]:
-                p = clamps[i][0]
-            elif p > clamps[i][1]:
-                p = clamps[i][1]
-
-            mCmdArr.setMotorCmd(i,  motorCmd(mode=MotorModeLow.Servo, q=p, dq=0, Kp = pgain, Kd = dgain, tau = 0.0))
-
-        lcmd.motorCmd = mCmdArr
-        cmd_bytes = lcmd.buildCmd(debug=False)
-        self.conn.send(cmd_bytes)
-        return lstate
+    obs += [0] * 4  # delta speed_vec
+    return np.array(obs, dtype=np.float32)
 
 
 def main():
     device = 'cpu'
 
-    prop_enc_pth = 'models/prop_encoder_1200.pt'
-    mlp_pth = 'models/mlp_1200.pt'
+    prop_enc_pth = 'src/models/prop_encoder_1200.pt'
+    mlp_pth = 'src/models/mlp_1200.pt'
 
     prop_loaded_encoder = torch.jit.load(prop_enc_pth).to(device)
     loaded_mlp = torch.jit.load(mlp_pth).to(device)
@@ -145,16 +50,20 @@ def main():
 
     t_steps = 50
 
-    pid_coeff = 35 # May be too much?
-    dgain = 0.6 # unnecessary constant
+    pgain = 35 # May be too much?
+    dgain = 3 # unnecessary constant
 
-    conn = GO1Connection()
+    conn = simulation.Simulation(config)
+    conn.set_keyframe(2)
+    conn.set_motor_positions(positions.stand_command().q)
+    conn.start() # TODO SendInitCmd
 
-    conn.sendInitCmd()
-    state = conn.getState()
-    assert state is not None
-    obs = conn.getObservation(state)
+    state = conn.get_latest_state()
+    while state is None:
+        state = conn.get_latest_state()
+        time.sleep(0.1)
 
+    obs = to_observation(state)
     history = deque([obs]*t_steps, maxlen=t_steps)
 
     step = 0
@@ -163,19 +72,16 @@ def main():
         while True:
             start_time = time.time()
 
-            state = conn.getState()
+            state = conn.get_latest_state()
             if state is not None:
-                obs = conn.getObservation(state)
+                obs = to_observation(state)
 
                 # calculate latent vec
                 if step % calc_latent_every_steps == 0 or latent_p is None:
                     history_vec = np.array(history, dtype=np.float32).flatten().reshape(1, -1)
                     history_vec = torch.tensor(history_vec, device=device, requires_grad=False)
                     latent_p = prop_loaded_encoder(history_vec)
-                    calc_env = True
-                else:
-                    calc_env = False
-
+                
                 # calc action
                 obs_torch = torch.tensor(obs.reshape(1, -1), device=device)
                 action = loaded_mlp(torch.cat([obs_torch, latent_p], 1))
@@ -185,8 +91,9 @@ def main():
                 history.popleft()
                 history.append(obs)
                 # send action
-                log(log_of, step, start_time, time.time_ns(), state, obs, action, calc_env)
-                conn.positionAction(action, pgain = pid_coeff, dgain = dgain)
+                cmd = command.Command(action[0], Kp=[pgain]*12, Kd=[dgain]*12)
+                cmd.clamp_q()
+                conn.send(cmd.robot_cmd())
 
             duration = time.time() - start_time
             if duration < cycle_duration_s:
@@ -197,6 +104,4 @@ def main():
 
 
 if __name__ == '__main__':
-    now_s = datetime.now().strftime("%y%m%dT%H%M%S")
-    with open(f'log_{now_s}.txt', 'wb') as of:
-        main(of)
+    main()

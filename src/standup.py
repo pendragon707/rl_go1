@@ -12,7 +12,6 @@ config.ENABLE_SIMULATION = True
 sim_conn = simulation.Simulation(config)
 
 sim_conn.set_keyframe(0)
-sim_conn.set_motor_positions(positions.laydown_q)
 sim_conn.start()
 
 

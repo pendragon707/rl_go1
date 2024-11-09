@@ -1,4 +1,6 @@
-motors_names = ['FR_0', 'FR_1', 'FR_2', 
+import numpy as np
+
+motors_names = ['FR_0', 'FR_1', 'FR_2',
                 'FL_0', 'FL_1', 'FL_2',
                 'RR_0', 'RR_1', 'RR_2',
                 'RL_0', 'RL_1', 'RL_2']
@@ -32,6 +34,9 @@ motors_mujoco_pos_range = [
     ('RL_1', -0.686, 4.501),
     ('RL_2', -2.818, -0.888)
 ]
+
+q_mujoco_min = np.array([e[1] for e in motors_mujoco_pos_range])
+q_mujoco_max = np.array([e[2] for e in motors_mujoco_pos_range])
 
 motor_name_to_no = {name: no for no, name in enumerate(motors_names)}
 

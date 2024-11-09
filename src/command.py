@@ -31,6 +31,9 @@ class Command:
         lcmd.motorCmd = mCmdArr
         return lcmd
     
+    def clamp_q(self):
+        self.q = np.clip(self.q, constants.q_mujoco_min, constants.q_mujoco_max)
+
     def copy(self, q=None, dq=None, Kp=None, Kd=None, tau=None):
         return Command(
             q = self.q.copy() if q is None else q,
