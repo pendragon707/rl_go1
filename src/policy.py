@@ -8,22 +8,20 @@ import sys
 import numpy as np
 from collections import deque
 
-from ucl.common import byte_print, decode_version, decode_sn, getVoltage, pretty_print_obj, lib_version
-from ucl.lowState import lowState
+import time
+import simulation
+
 from ucl.lowCmd import lowCmd
-from ucl.unitreeConnection import unitreeConnection, LOW_WIFI_DEFAULTS, LOW_WIRED_DEFAULTS
-from ucl.enums import GaitType, SpeedLevel, MotorModeLow
 from ucl.complex import motorCmd, motorCmdArray
+from ucl.enums import MotorModeLow
+
+import config
+import constants
+import positions
+from freedogs2py_bridge import MujocoConnectionProxy
+
 
 import pickle
-
-
-motors_names = [
-    'FR_0', 'FR_1', 'FR_2',
-    'FL_0', 'FL_1', 'FL_2',
-    'RR_0', 'RR_1', 'RR_2',
-    'RL_0', 'RL_1', 'RL_2'
-]
 
 
 def quatToEuler(quat):
@@ -130,13 +128,7 @@ class GO1Connection:
         return lstate
 
 
-def log(log_of, step, step_time, send_action_ns, state, obs, action, calc_env):
-    data = pickle.dumps((step, step_time, send_action_ns, state, obs, action, calc_env))
-    size = len(data)
-    log_of.write(size.to_bytes(4, 'big') + data)
-
-
-def main(log_of):
+def main():
     device = 'cpu'
 
     prop_enc_pth = 'models/prop_encoder_1200.pt'
@@ -153,8 +145,7 @@ def main(log_of):
 
     t_steps = 50
 
-    # Test on emulator!!!!
-    pid_coeff = 5 # May be too much?
+    pid_coeff = 35 # May be too much?
     dgain = 0.6 # unnecessary constant
 
     conn = GO1Connection()
@@ -163,8 +154,6 @@ def main(log_of):
     state = conn.getState()
     assert state is not None
     obs = conn.getObservation(state)
-
-    log(log_of, -1, time.time(), None, state, obs, None, False)
 
     history = deque([obs]*t_steps, maxlen=t_steps)
 

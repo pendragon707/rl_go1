@@ -1,4 +1,15 @@
-def stand_position():
+import command
+
+
+laydown_q = [
+    -0.471,  1.17, -2.74, # FR
+    0.471, 1.17, -2.74, # FL
+    -0.471,  1.17, -2.75, # RR
+    0.471, 1.17, -2.75  # RL
+]
+
+
+def stand_command():
     Kd = 2
 
     hip_Kp, hip_Kd  = 10, Kd
@@ -17,18 +28,10 @@ def stand_position():
         (-1, calf_Kp, calf_Kd)  # Calf
     ]
 
-    return front_legs*2 + back_legs*2
+    return command.CommandFromArray3(front_legs*2 + back_legs*2)
 
 
-def laydown_position():
-    return [
-        -0.471,  1.17, -2.74, # FR
-        0.471, 1.17, -2.74, # FL
-        -0.471,  1.17, -2.75, # RR
-        0.471, 1.17, -2.75  # RL
-    ]
-
-def laydown_position_2():
+def laydown_command():
     Kd = 2
 
     hip_Kp, hip_Kd  = 10, Kd
@@ -47,7 +50,7 @@ def laydown_position_2():
         (-2.75, calf_Kp, calf_Kd)
     ]
     
-    return (
+    return command.CommandFromArray3(
         [hipR] + front_legs +
         [hipL] + front_legs +
         [hipR] + back_legs +

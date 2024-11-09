@@ -12,15 +12,17 @@ from ucl.lowCmd import lowCmd
 from ucl.lowState import lowState
 
 import constants
+import freedogs2py_bridge
 
 
 motor_qpos = {'FL_0': 7, 'FL_1': 8, 'FL_2': 9, 'FR_0': 10, 'FR_1': 11, 'FR_2': 12,
               'RL_0': 13, 'RL_1': 14, 'RL_2': 15, 'RR_0': 16, 'RR_1': 17, 'RR_2': 18}
 
 
-class Simulation:
+class Simulation(freedogs2py_bridge.RobotProxy):
     
     def __init__(self, config):
+        super(Simulation, self).__init__()
         self.mj_model = mujoco.MjModel.from_xml_path(config.ROBOT_SCENE)
         self.mj_model.opt.timestep = config.SIMULATE_DT
         self.mj_data = mujoco.MjData(self.mj_model)
@@ -79,11 +81,11 @@ class Simulation:
                 self.viewer.sync()
             time.sleep(self.config.VIEWER_DT)
 
-    def set_cmd(self, cmd: lowCmd):
+    def send_impl(self, cmd: lowCmd) -> None:
         self.cmd = cmd
-
-    def get_states(self) -> typing.List[typing.Tuple[int, lowState]]:
-        return [self.states.popleft() for _  in range(len(self.states))]
+    
+    def get_states_impl(self) -> list[typing.Tuple[int, lowState]]:
+        return [self.states.popleft() for _  in range(len(self.states))]    
 
     def make_state(self):
         rslt = lowState()

@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
+import typing
 import time
-
-from simulation import Simulation
 
 from ucl.lowCmd import lowCmd
 from ucl.lowState import lowState
@@ -11,21 +10,10 @@ import monitoring
 
 
 class RobotProxy(ABC):
-    @abstractmethod
-    def send(self, cmd: lowCmd) -> None:
-        ...
     
-    @abstractmethod
-    def get_latest_state(self) -> lowState:
-        ...
-
-    
-
-class MujocoConnectionProxy(RobotProxy):
-    def __init__(self, simulation: Simulation):
-        self.simulation = simulation
+    def __init__(self):
         self.monitoring = monitoring.Monitoring()
-
+    
     def check_motor_ranges(self, cmd):
         for no, motor_pos_range in enumerate(constants.motors_mujoco_pos_range):
             q = cmd.motorCmd.motor(no).q
@@ -37,16 +25,24 @@ class MujocoConnectionProxy(RobotProxy):
     def send(self, cmd: lowCmd) -> None:
         self.check_motor_ranges(cmd)
         self.monitoring.send_cmd(time.time_ns(), cmd)
-        self.simulation.set_cmd(cmd)
-
+        self.send_impl(cmd)
+    
     def get_latest_state(self) -> lowState:
-        states = self.simulation.get_states()
-        self.monitoring.send_states(states)
-
+        states = self.get_states_impl()
         if len(states) > 0:
+            self.monitoring.send_states(states)
             return states[-1][1]
         else:
             return None
-        # log
-        # monitor
+
+    @abstractmethod
+    def start(self):
+        ...
+
+    @abstractmethod
+    def send_impl(self, cmd: lowCmd) -> None:
+        ...
     
+    @abstractmethod
+    def get_states_impl(self) -> list[typing.Tuple[int, lowState]]:
+        ...
