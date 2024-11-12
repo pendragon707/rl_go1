@@ -20,17 +20,17 @@ class Command:
         mCmdArr = motorCmdArray()
         for i in range(12):
             mCmdArr.setMotorCmd(
-                constants.motors_names[i], 
-                motorCmd(mode=MotorModeLow.Servo, 
-                         q=self.q[i].item(), 
-                         dq=self.dq[i].item(), 
-                         Kp=self.Kp[i].item(), 
-                         Kd=self.Kd[i].item(), 
+                constants.motors_names[i],
+                motorCmd(mode=MotorModeLow.Servo,
+                         q=self.q[i].item(),
+                         dq=self.dq[i].item(),
+                         Kp=self.Kp[i].item(),
+                         Kd=self.Kd[i].item(),
                          tau=self.tau[i].item())
-        )
+            )
         lcmd.motorCmd = mCmdArr
         return lcmd
-    
+
     def clamp_q(self):
         self.q = np.clip(self.q, constants.q_mujoco_min, constants.q_mujoco_max)
 

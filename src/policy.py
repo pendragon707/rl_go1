@@ -11,9 +11,10 @@ import time
 import simulation
 import command
 import positions
+from freedogs2py_bridge import RealGo1
 
 
-def to_observation(state, last_action = None):
+def to_observation(state, last_action=None):
     obs = []
     imu_quaternion = state.imu.quaternion  # TODO Check Euler angles from dog
     obs += utils.quatToEuler(imu_quaternion)[:2]
@@ -52,10 +53,15 @@ def main():
 
     pgain = 35 # May be too much?
     dgain = 3 # unnecessary constant
+    real = True
 
-    conn = simulation.Simulation(config)
-    conn.set_keyframe(2)
-    conn.set_motor_positions(positions.stand_command().q)
+    if not real:
+        conn = simulation.Simulation(config)
+        conn.set_keyframe(2)
+        conn.set_motor_positions(positions.stand_command().q)
+    else:
+        conn = RealGo1()
+
     conn.start() # TODO SendInitCmd
 
     state = conn.get_latest_state()
@@ -81,7 +87,7 @@ def main():
                     history_vec = np.array(history, dtype=np.float32).flatten().reshape(1, -1)
                     history_vec = torch.tensor(history_vec, device=device, requires_grad=False)
                     latent_p = prop_loaded_encoder(history_vec)
-                
+
                 # calc action
                 obs_torch = torch.tensor(obs.reshape(1, -1), device=device)
                 action = loaded_mlp(torch.cat([obs_torch, latent_p], 1))

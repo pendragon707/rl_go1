@@ -1,9 +1,8 @@
 # rl_go1
 
 ```
-pip install -e  submodules/free-dog-sdk
-```
-
-```
+sudo snap install plotjuggler
 pip install cbor2
+
+pip install -e  submodules/free-dog-sdk
 ```

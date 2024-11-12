@@ -15,11 +15,11 @@ class Monitoring:
             rslt[constants.motors_names[no]] = {
                 'q': motorState.q,
                 'dq': motorState.dq,
-                'tau_est': motorState.tau_est
+                'tauEst': motorState.tauEst
             }
 
         return rslt
-    
+
     def motors_cmd_dict(self, motorCmd):
         rslt = {}
         for no, motor_name in enumerate(constants.motors_names):
@@ -43,9 +43,9 @@ class Monitoring:
                     'motors': self.motors_state_dict(state[1].motorState)
                 }
             }
-        
+
         self.sock.sendto(cbor2.dumps(data), (self.host, self.port))
-    
+
     def send_cmd(self, timestamp, cmd):
         data = {
             'timestamp': timestamp,

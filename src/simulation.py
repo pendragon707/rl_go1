@@ -20,7 +20,7 @@ motor_qpos = {'FL_0': 7, 'FL_1': 8, 'FL_2': 9, 'FR_0': 10, 'FR_1': 11, 'FR_2': 1
 
 
 class Simulation(freedogs2py_bridge.RobotProxy):
-    
+
     def __init__(self, config):
         super(Simulation, self).__init__()
         self.mj_model = mujoco.MjModel.from_xml_path(config.ROBOT_SCENE)
@@ -59,16 +59,16 @@ class Simulation(freedogs2py_bridge.RobotProxy):
             if self.cmd is not None:
                 cmd, self.cmd = self.cmd, None
                 self.control(cmd)
-            
+
             with self.locker:
                 if self.config.ENABLE_SIMULATION:
                     mujoco.mj_step(self.mj_model, self.mj_data)
-                
+
             if send_step_start is None or (time.perf_counter() - send_step_start) >= self.config.SEND_STATE_DT:
                 state = self.make_state()
                 self.states.append((time.time_ns(), state))
                 send_step_start = time.perf_counter()
-            
+
             time_until_next_step = self.mj_model.opt.timestep - (
                 time.perf_counter() - step_start
             )
@@ -83,9 +83,9 @@ class Simulation(freedogs2py_bridge.RobotProxy):
 
     def send_impl(self, cmd: lowCmd) -> None:
         self.cmd = cmd
-    
+
     def get_states_impl(self) -> list[typing.Tuple[int, lowState]]:
-        return [self.states.popleft() for _  in range(len(self.states))]    
+        return [self.states.popleft() for _  in range(len(self.states))]
 
     def make_state(self):
         rslt = lowState()
@@ -95,10 +95,10 @@ class Simulation(freedogs2py_bridge.RobotProxy):
             rslt.motorState[i].dq = self.mj_data.sensordata[
                 i + self.num_motor
             ]
-            rslt.motorState[i].tau_est = self.mj_data.sensordata[
+            rslt.motorState[i].tauEst = self.mj_data.sensordata[
                 i + 2 * self.num_motor
             ]
-        
+
         rslt.imu.quaternion[0] = self.mj_data.sensordata[
             self.dim_motor_sensor + 0
         ]
