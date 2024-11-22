@@ -28,7 +28,7 @@ pip install -e .
 
 # Train 1-stage
 cd raisimGymTorch/env/envs/rsg_go1_task
-python runner.py --name random --gpu 1 --exptid 1 --cpu --overwrite
+python runner.py --name random --gpu 1 --exptid 1 --overwrite
 
 # Train 2-stage
 #  exptid - номер папки в которую запишуштся результаты,
