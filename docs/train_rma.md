@@ -28,12 +28,12 @@ pip install -e .
 
 # Train 1-stage
 cd raisimGymTorch/env/envs/rsg_go1_task
-python runner.py --name random --gpu 1 --exptid 1 --overwrite
+python runner.py --name random --gpu 0 --exptid 1 --overwrite
 
 # Train 2-stage
 #  exptid - номер папки в которую запишуштся результаты,
 #  loaid - номер политики, которую нужно взять из этапа 1:
-python dagger.py --name cms_dagger --exptid 1 --loadpth ../../../../data/rsg_go1_task/0001 --loadid 0 --gpu 1
+python dagger.py --name cms_dagger --exptid 1 --loadpth ../../../../data/rsg_go1_task/0001 --loadid 0 --gpu 0
 
 
 # Визуализация, 0 - номер политики:
