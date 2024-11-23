@@ -3,11 +3,13 @@
 После клонирования репозитория устанавливаем следующие зависимости, если не установлены:
 ```
 sudo snap install plotjuggler
-pip install cbor2
+pip install cbor2 mujoco
+conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
 ```
 Далее подгружаем сабмодули:
 ```
 git submodule update --init --recursive
+pip install -e submodules/free-dog-sdk/
 ```
 Если хотим запускать в симуляторе, то изменяем в standup.py real = False, если на реальном роботе, то real = True
 
