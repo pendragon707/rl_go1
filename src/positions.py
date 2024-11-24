@@ -30,6 +30,13 @@ def stand_command():
 
     return command.CommandFromArray3(front_legs*2 + back_legs*2)
 
+def stand_command_2():
+    return command.Command(
+        q = [0.05,  0.8, -1.4, -0.05,  0.8, -1.4, 0.05,  0.8, -1.4,-0.05,  0.8, -1.4],
+        Kp = [45]*12,
+        Kd = [0.6]*12
+    )
+
 
 def laydown_command():
     Kd = 2

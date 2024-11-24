@@ -53,13 +53,19 @@ class Simulation(freedogs2py_bridge.RobotProxy):
 
     def _simulation_loop(self):
         send_step_start = None
+        last_cmd_ts = None
+
         while self.viewer.is_running():
             step_start = time.perf_counter()
 
             if self.cmd is not None:
                 cmd, self.cmd = self.cmd, None
                 self.control(cmd)
-
+                last_cmd_ts = time.time()
+            elif last_cmd_ts is not None and (time.time() - last_cmd_ts) >= self.config.COMMAND_RESET_TIMEOUT:
+                self.reset_control()
+                last_cmd_ts = None
+            
             with self.locker:
                 if self.config.ENABLE_SIMULATION:
                     mujoco.mj_step(self.mj_model, self.mj_data)
@@ -142,3 +148,7 @@ class Simulation(freedogs2py_bridge.RobotProxy):
                 mc.Kp * (mc.q - self.mj_data.sensordata[i]) +
                 mc.Kd * (mc.dq - self.mj_data.sensordata[i + self.num_motor])
             )
+
+    def reset_control(self):
+        for i in range(self.num_motor):
+            self.mj_data.ctrl[i] = 0

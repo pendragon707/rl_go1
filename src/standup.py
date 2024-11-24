@@ -8,7 +8,7 @@ import utils
 
 config.ENABLE_SIMULATION = True
 
-real = True
+real = False
 conn = None
 
 if not real:
@@ -27,7 +27,7 @@ cycles = 0
 phase = 0
 phase_cycles = 0
 
-stand_command = positions.stand_command()
+stand_command = positions.stand_command_2()
 
 
 while real or conn.viewer.is_running():
