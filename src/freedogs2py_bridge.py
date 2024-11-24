@@ -35,6 +35,13 @@ class RobotProxy(ABC):
             return states[-1][1]
         else:
             return None
+        
+    def wait_latest_state(self) -> lowState:
+        state = self.get_latest_state()
+        while state is None:
+            time.sleep(0.001)
+            state = self.get_latest_state()
+        return state
 
     @abstractmethod
     def start(self):

@@ -1,3 +1,4 @@
+import argparse
 import config
 
 import math
@@ -10,14 +11,14 @@ import utils
 import time
 import simulation
 import command
-import positions
+import standup
 from freedogs2py_bridge import RealGo1
 
 
-def to_observation(state, last_action=None):
+def to_observation(state, action_history):
     obs = []
-    imu_quaternion = state.imu.quaternion  # TODO Check Euler angles from dog
-    obs += utils.quatToEuler(imu_quaternion)[:2]
+    imu_quaternion = state.imu.quaternion
+    obs.extend(utils.quatToEuler(imu_quaternion)[:2])
 
     for i in range(12):
         obs.append(state.motorState[i].q)
@@ -25,16 +26,26 @@ def to_observation(state, last_action=None):
     for i in range(12):
         obs.append(state.motorState[i].dq)
 
-    if last_action is not None:
-        obs += last_action.tolist()
-    else:
-        obs += [0] * 12
-
-    obs += [0] * 4  # delta speed_vec
+    obs.extend(action_history[-1][0])
+    obs += [0] * 4
     return np.array(obs, dtype=np.float32)
 
 
-def main():
+def normalize_observation(obs, loaded_mean, loaded_var, clip_obs):
+    return np.clip(
+        (obs - loaded_mean) / np.sqrt(loaded_var + 1e-8),
+        -clip_obs,
+        clip_obs
+    )
+
+
+def push_history(deq, e):
+    if len(deq) == deq.maxlen:
+        deq.popleft()
+    deq.append(e)
+
+
+def main(args):
     device = 'cpu'
 
     prop_enc_pth = 'src/models/prop_encoder_1200.pt'
@@ -44,79 +55,63 @@ def main():
 
     prop_loaded_encoder = torch.jit.load(prop_enc_pth).to(device)
     loaded_mlp = torch.jit.load(mlp_pth).to(device)
-    loaded_mean = np.loadtxt(mean_file, dtype=np.float32)
-    loaded_var = np.loadtxt(var_file, dtype=np.float32)
-    
-    num_obs = 2170
-    obs_rms = utils.RunningMeanStd(shape=[1, num_obs])
-    obs_rms.mean = loaded_mean
-    obs_rms.var = loaded_var
+    loaded_mean = np.loadtxt(mean_file, dtype=np.float32)[0]
+    loaded_var = np.loadtxt(var_file, dtype=np.float32)[0]
+    clip_obs = 10
 
+    action_mean = np.array([0.05,  0.8, -1.4, -0.05,  0.8, -1.4, 0.05,  0.8, -1.4,-0.05,  0.8, -1.4], dtype=np.float32)
+    Kp = 35
+    Kd = 0.6
+    act_history = deque([np.zeros((1, 12)) for _ in range(4)], maxlen=4)
+    
     calc_latent_every_steps = 2
     control_freq_hz = 100
     cycle_duration_s = 1.0 / control_freq_hz
-
     print('Expected cycle duration:', math.ceil(cycle_duration_s * 1000.0), 'ms')
 
-    t_steps = 50
-
-    pgain = 45
-    dgain = 0.6
-
-    real = False
-
-    if not real:
-        conn = simulation.Simulation(config)
-        conn.set_keyframe(3)
-        #conn.set_motor_positions(positions.stand_command().q)
-    else:
+    if args.real:
         conn = RealGo1()
-
+    else:
+        conn = simulation.Simulation(config) 
+        if args.standpos:
+            conn.set_keyframe(3)
+        else:
+            conn.set_keyframe(0)
+    
     conn.start()
-
-    state = conn.get_latest_state()
-    while state is None:
-        state = conn.get_latest_state()
-        time.sleep(0.1)
-
-    obs = to_observation(state)
-    history = deque([obs]*t_steps, maxlen=t_steps)
-
+    if not args.standpos:
+        standup.standup(conn)
+    
+    obs = to_observation(conn.wait_latest_state(), act_history)
+    obs_history = deque([obs]*50, maxlen=51)
+    
     step = 0
     latent_p = None
-    action_vec = None
     with torch.no_grad():
-        while True:
+        while args.real or conn.viewer.is_running():
             start_time = time.time()
 
-            state = conn.get_latest_state()
-            if state is not None:
-                obs = to_observation(state, action_vec)
-
-                # calculate latent vec
-                if step % calc_latent_every_steps == 0 or latent_p is None:
-                    history_vec = np.array(history, dtype=np.float32).flatten().reshape(1, -1)
-                    history_vec = torch.tensor(history_vec, device=device, requires_grad=False)
-                    latent_p = prop_loaded_encoder(history_vec)
+            push_history(obs_history, to_observation(conn.wait_latest_state(), act_history))
+            obs = np.concatenate(
+                [np.concatenate(obs_history), np.zeros(28, dtype=np.float32)]
+            )
+            obs = normalize_observation(obs, loaded_mean, loaded_var, clip_obs)
+            obs_torch = torch.from_numpy(obs).cpu().reshape(1, -1)
+    
+            with torch.no_grad():
+                if step%calc_latent_every_steps== 0:
+                    latent_p = prop_loaded_encoder(obs_torch[:,:42*50])
+                action_ll = loaded_mlp(
+                    torch.cat([obs_torch[:,42*50:42*(50 + 1)], latent_p], 1)
+                )
+            # normalize action
+            push_history(act_history, action_ll)
+            action = act_history[0][0] * 0.4 + action_mean
             
-                # calc action
-                obs_torch = torch.tensor(obs.reshape(1, -1), device=device)
-                
-                action = loaded_mlp(torch.cat([obs_torch, latent_p], 1))
-                action = action.cpu().detach().numpy()[0]
-                action_vec = action.copy()
-
-                # postproc action
-                action = action * 0.4 + np.array([0.05,  0.8, -1.4, -0.05,  0.8, -1.4, 0.05,  0.8, -1.4,-0.05,  0.8, -1.4])
-
-                # history deque push, pop
-                history.popleft()
-                history.append(obs)
-                # send action
-                cmd = command.Command(action, Kp=[pgain]*12, Kd=[dgain]*12)
-                cmd.clamp_q()
-                conn.send(cmd.robot_cmd())
-
+            cmd = command.Command(q=action, Kp=[Kp]*12, Kd=[Kd]*12)
+            # cmd.clamp_q()
+            conn.send(cmd.robot_cmd())
+                       
             duration = time.time() - start_time
             if duration < cycle_duration_s:
                 time.sleep(duration)
@@ -126,4 +121,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-r', '--real', action='store_true')
+    parser.add_argument('-s', '--standpos', action='store_true')
+    main(parser.parse_args())
