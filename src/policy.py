@@ -114,7 +114,7 @@ def main(args):
                        
             duration = time.time() - start_time
             if duration < cycle_duration_s:
-                time.sleep(duration)
+                time.sleep(cycle_duration_s - duration)
             else:
                 print('too slow:', math.ceil(duration * 1000), 'ms')
             step += 1
