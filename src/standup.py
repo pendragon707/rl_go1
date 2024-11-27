@@ -1,5 +1,5 @@
 import time
-from freedogs2py_bridge import RealGo1
+from freedogs2py_bridge import RealGo1, RealAlienGo
 import simulation
 
 import config
@@ -39,6 +39,7 @@ def main():
     config.ENABLE_SIMULATION = True
 
     real = False
+    aliengo = True
     conn = None
 
     if not real:
@@ -46,6 +47,10 @@ def main():
         conn.set_keyframe(0)
         conn.start()
         viewer = conn.viewer
+    elif aliengo:
+        conn = RealAlienGo()
+        conn.start()
+        viewer = None
     else:
         conn = RealGo1()
         conn.start()
