@@ -19,3 +19,6 @@
 [submodule "submodules/unitree_mujoco"]
 	path = submodules/unitree_mujoco
 	url = https://github.com/kamvlad/unitree_mujoco.git
+[submodule "submodules/unitree_legged_sdk"]
+	path = submodules/unitree_legged_sdk
+	url = git@github.com:pendragon707/unitree_legged_sdk.git
