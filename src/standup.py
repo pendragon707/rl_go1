@@ -7,7 +7,7 @@ import positions
 import utils
 
 
-def standup(conn, viewer = None):
+def standup(conn, viewer = None, aliengo = False):
     phase = 0
     phase_cycles = 0
 
@@ -24,11 +24,18 @@ def standup(conn, viewer = None):
                 phase = 2
                 phase_cycles = 0
                 init_q = utils.q_vec(state)
-            conn.send(positions.laydown_command().robot_cmd())
+            if aliengo:                
+                conn.send(positions.laydown_command().aliengo_cmd())
+            else:
+                conn.send(positions.laydown_command().robot_cmd())
         elif phase == 2:
             q_step = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)
             cmd = stand_command.copy(q = q_step)
-            conn.send(cmd.robot_cmd())
+            if aliengo:                
+                conn.send(cmd.aliengo_cmd())
+            else:
+                conn.send(cmd.robot_cmd())
+
             if phase_cycles == 500:
                 return state, cmd        
 
@@ -38,7 +45,7 @@ def standup(conn, viewer = None):
 def main():
     config.ENABLE_SIMULATION = True
 
-    real = False
+    real = True
     aliengo = True
     conn = None
 
@@ -58,9 +65,13 @@ def main():
 
     time.sleep(0.2)
 
-    _, cmd = standup(conn, viewer)
+    _, cmd = standup(conn, viewer, aliengo)
     while viewer is None or viewer.is_running():
-        conn.send(cmd.robot_cmd())
+        if aliengo:
+            conn.send(cmd.aliengo_cmd())
+        else:
+            conn.send(cmd.robot_cmd())
+
         time.sleep(0.01)
 
 

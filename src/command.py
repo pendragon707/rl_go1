@@ -1,8 +1,13 @@
 import numpy as np
+import sys
 
+sys.path.append("./submodules/free-dog-sdk/")
 from ucl.lowCmd import lowCmd
 from ucl.complex import motorCmd, motorCmdArray
 from ucl.enums import MotorModeLow
+
+sys.path.append('./submodules/unitree_legged_sdk/lib/python/amd64')
+import robot_interface_aliengo as sdk
 
 import constants
 
@@ -29,6 +34,22 @@ class Command:
                          tau=self.tau[i].item())
             )
         lcmd.motorCmd = mCmdArr
+        return lcmd
+    
+
+    def aliengo_cmd(self):
+        lcmd = sdk.LowCmd() 
+
+        LOWLEVEL  = 0xff  # TEMP!!!!
+        lcmd.levelFlag = LOWLEVEL          
+
+        for i in range(12):
+            lcmd.motorCmd[i].q = self.q[i].item()
+            lcmd.motorCmd[i].dq = self.dq[i].item()
+            lcmd.motorCmd[i].Kp = self.Kp[i].item()
+            lcmd.motorCmd[i].Kd = self.Kd[i].item()
+            lcmd.motorCmd[i].tau = self.tau[i].item()
+        
         return lcmd
 
     def clamp_q(self):

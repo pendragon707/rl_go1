@@ -102,7 +102,7 @@ LOWLEVEL  = 0xff
 class RealAlienGo(RobotProxy):
     def __init__(self, settings=ALIENGO_LOW_WIRED_DEFAULTS, safe = True):
         super().__init__()        
-        self.conn = sdk.UDP(settings)
+        self.conn = sdk.UDP(*settings)
 
         # if safe:
         #     self.safe = sdk.Safety(sdk.LeggedType.Aliengo)
@@ -112,6 +112,11 @@ class RealAlienGo(RobotProxy):
         state = sdk.LowState()
         self.conn.InitCmdData(self.cmd)
         self.cmd.levelFlag = level
+
+    def send(self, cmd) -> None:
+        # self.check_motor_ranges(cmd)
+        # self.monitoring.send_cmd(time.time_ns(), cmd)
+        self.send_impl(cmd)
 
     def send_impl(self, cmd) -> None:        
         self.conn.SetSend(cmd)
