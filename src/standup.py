@@ -6,6 +6,10 @@ import config
 import positions
 import utils
 
+import sys
+sys.path.append('./submodules/unitree_legged_sdk/lib/python/amd64')
+import robot_interface_aliengo as sdk
+
 
 def standup(conn, viewer = None, aliengo = False):
     phase = 0
