@@ -1,5 +1,9 @@
 import math
 import numpy as np
+
+import sys
+sys.path.append("./submodules/free-dog-sdk/")
+
 from ucl.lowState import lowState
 
 

@@ -1,11 +1,18 @@
 import command
 
 
+# laydown_q = [
+#     -0.471,  1.17, -2.74, # FR
+#     0.471, 1.17, -2.74, # FL
+#     -0.471,  1.17, -2.75, # RR
+#     0.471, 1.17, -2.75  # RL
+# ]
+
 laydown_q = [
-    -0.471,  1.17, -2.74, # FR
-    0.471, 1.17, -2.74, # FL
-    -0.471,  1.17, -2.75, # RR
-    0.471, 1.17, -2.75  # RL
+    -0.15, 1.18, -2.8, # FR
+    -0.15, 1.18, -2.8,# FL
+    -0.15, 1.18, -2.8, # RR
+    -0.15, 1.18, -2.8  # RL
 ]
 
 
@@ -56,7 +63,7 @@ def laydown_command():
         (2.5, thig_Kp, thig_Kd),
         (-2.75, calf_Kp, calf_Kd)
     ]
-    
+
     return command.CommandFromArray3(
         [hipR] + front_legs +
         [hipL] + front_legs +

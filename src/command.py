@@ -37,11 +37,14 @@ class Command:
         return lcmd
     
 
-    def aliengo_cmd(self):
-        lcmd = sdk.LowCmd() 
+    def aliengo_cmd(self, lcmd, p = False):
+        # lcmd = sdk.LowCmd() 
 
-        LOWLEVEL  = 0xff  # TEMP!!!!
-        lcmd.levelFlag = LOWLEVEL          
+        # LOWLEVEL  = 0xff  # TEMP!!!!
+        # lcmd.levelFlag = LOWLEVEL   
+
+        print(lcmd)             
+        # print( type(lcmd) )          
 
         for i in range(12):
             lcmd.motorCmd[i].q = self.q[i].item()
@@ -51,6 +54,15 @@ class Command:
             lcmd.motorCmd[i].tau = self.tau[i].item()
         
         return lcmd
+
+    def get_command(self, num):
+        return (
+                self.q[num].item(),
+                self.dq[num].item(),
+                self.Kp[num].item(),
+                self.Kd[num].item(),
+                self.tau[num].item(),
+            )
 
     def clamp_q(self):
         self.q = np.clip(self.q, constants.q_mujoco_min, constants.q_mujoco_max)
