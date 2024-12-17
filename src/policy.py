@@ -12,7 +12,17 @@ import time
 import simulation
 import command
 import standup
-from freedogs2py_bridge import RealGo1
+from freedogs2py_bridge import RealGo1, RealAlienGo
+
+import sys
+
+sys.path.append("./submodules/free-dog-sdk/")
+from ucl.lowCmd import lowCmd
+from ucl.lowState import lowState
+from ucl.unitreeConnection import unitreeConnection, LOW_WIRED_DEFAULTS
+
+sys.path.append('./submodules/unitree_legged_sdk/lib/python/amd64')
+import robot_interface_aliengo as sdk
 
 
 def to_observation(state, action_history):
@@ -51,7 +61,7 @@ def main(args):
     prop_enc_pth = 'src/models/prop_encoder_1200.pt'
     mlp_pth = 'src/models/mlp_1200.pt'
     mean_file = 'src/models/mean1200.csv'
-    var_file = 'src/models/var1200.csv'
+    var_file = 'src/models/var1200.csv'    
 
     prop_loaded_encoder = torch.jit.load(prop_enc_pth).to(device)
     loaded_mlp = torch.jit.load(mlp_pth).to(device)
@@ -69,7 +79,9 @@ def main(args):
     cycle_duration_s = 1.0 / control_freq_hz
     print('Expected cycle duration:', math.ceil(cycle_duration_s * 1000.0), 'ms')
 
-    if args.real:
+    if args.real and args.aliengo:        
+        conn = RealAlienGo()
+    elif args.real and not args.aliengo:
         conn = RealGo1()
     else:
         conn = simulation.Simulation(config) 
@@ -123,5 +135,6 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--real', action='store_true')
+    parser.add_argument('-a', '--aliengo', action='store_true')
     parser.add_argument('-s', '--standpos', action='store_true')
     main(parser.parse_args())
