@@ -14,7 +14,8 @@ import utils
 
 import time
 import simulation
-import command
+# import command
+from command import Command
 import standup
 from freedogs2py_bridge import RealGo1, RealAlienGo
 
@@ -42,6 +43,12 @@ ALIENGO_LOW_WIRED_DEFAULTS = (LOCAL_PORT, TARGET_IP, TARGET_PORT, LOW_CMD_LENGTH
 HIGHLEVEL = 0x00
 LOWLEVEL  = 0xff
 
+def setup_motor(cmd, num_motor, q, dq, Kp, Kd, tau):
+    cmd.motorCmd[num_motor].q = q
+    cmd.motorCmd[num_motor].dq = dq
+    cmd.motorCmd[num_motor].Kp = Kp
+    cmd.motorCmd[num_motor].Kd = Kd
+    cmd.motorCmd[num_motor].tau = tau
 
 
 def standup(cmd, conn = None, viewer = None, aliengo = True, udp = None):
@@ -128,72 +135,64 @@ def standup(cmd, conn = None, viewer = None, aliengo = True, udp = None):
         time.sleep(0.01)
 
 
-class Command:
-    def __init__(self, q=[0.]*12, dq=[0.]*12, Kp=[0.]*12, Kd=[0.]*12, tau=[0.]*12):
-        self.q = np.array(q, dtype=np.float32)
-        self.dq = np.array(dq, dtype=np.float32)
-        self.Kp = np.array(Kp, dtype=np.float32)
-        self.Kd = np.array(Kd, dtype=np.float32)
-        self.tau = np.array(tau, dtype=np.float32)
+# class Command:
+#     def __init__(self, q=[0.]*12, dq=[0.]*12, Kp=[0.]*12, Kd=[0.]*12, tau=[0.]*12):
+#         self.q = np.array(q, dtype=np.float32)
+#         self.dq = np.array(dq, dtype=np.float32)
+#         self.Kp = np.array(Kp, dtype=np.float32)
+#         self.Kd = np.array(Kd, dtype=np.float32)
+#         self.tau = np.array(tau, dtype=np.float32)
 
-    def robot_cmd(self) -> lowCmd:
-        lcmd = lowCmd()
-        mCmdArr = motorCmdArray()
-        for i in range(12):
-            mCmdArr.setMotorCmd(
-                constants.motors_names[i],
-                motorCmd(mode=MotorModeLow.Servo,
-                         q=self.q[i].item(),
-                         dq=self.dq[i].item(),
-                         Kp=self.Kp[i].item(),
-                         Kd=self.Kd[i].item(),
-                         tau=self.tau[i].item())
-            )
-        lcmd.motorCmd = mCmdArr
-        return lcmd
+#     def robot_cmd(self) -> lowCmd:
+#         lcmd = lowCmd()
+#         mCmdArr = motorCmdArray()
+#         for i in range(12):
+#             mCmdArr.setMotorCmd(
+#                 constants.motors_names[i],
+#                 motorCmd(mode=MotorModeLow.Servo,
+#                          q=self.q[i].item(),
+#                          dq=self.dq[i].item(),
+#                          Kp=self.Kp[i].item(),
+#                          Kd=self.Kd[i].item(),
+#                          tau=self.tau[i].item())
+#             )
+#         lcmd.motorCmd = mCmdArr
+#         return lcmd
     
 
-    def aliengo_cmd(self, lcmd, p = False):        
-        for i in range(12):
-            lcmd.motorCmd[i].q = self.q[i].item()
-            lcmd.motorCmd[i].dq = self.dq[i].item()
-            lcmd.motorCmd[i].Kp = self.Kp[i].item()
-            lcmd.motorCmd[i].Kd = self.Kd[i].item()
-            lcmd.motorCmd[i].tau = self.tau[i].item()
+#     def aliengo_cmd(self, lcmd, p = False):        
+#         for i in range(12):
+#             lcmd.motorCmd[i].q = self.q[i].item()
+#             lcmd.motorCmd[i].dq = self.dq[i].item()
+#             lcmd.motorCmd[i].Kp = self.Kp[i].item()
+#             lcmd.motorCmd[i].Kd = self.Kd[i].item()
+#             lcmd.motorCmd[i].tau = self.tau[i].item()
         
-        return lcmd
+#         return lcmd
 
-    def get_command(self, num):
-        return (
-                self.q[num].item(),
-                self.dq[num].item(),
-                self.Kp[num].item(),
-                self.Kd[num].item(),
-                self.tau[num].item(),
-            )
+#     def get_command(self, num):
+#         return (
+#                 self.q[num].item(),
+#                 self.dq[num].item(),
+#                 self.Kp[num].item(),
+#                 self.Kd[num].item(),
+#                 self.tau[num].item(),
+#             )
 
-    def clamp_q(self):
-        self.q = np.clip(self.q, constants.q_mujoco_min, constants.q_mujoco_max)
+#     def clamp_q(self):
+#         self.q = np.clip(self.q, constants.q_mujoco_min, constants.q_mujoco_max)
 
-    def copy(self, q=None, dq=None, Kp=None, Kd=None, tau=None):
-        return Command(
-            q = self.q.copy() if q is None else q,
-            dq = self.dq.copy() if dq is None else dq,
-            Kp = self.Kp.copy() if Kp is None else Kp,
-            Kd = self.Kd.copy() if Kd is None else Kd,
-            tau = self.tau.copy() if tau is None else tau,
-        )
-
-
-# def get_state():
-#     state = sdk.LowState()
-#     udp.Recv()
-#     udp.GetRecv(state)
+#     def copy(self, q=None, dq=None, Kp=None, Kd=None, tau=None):
+#         return Command(
+#             q = self.q.copy() if q is None else q,
+#             dq = self.dq.copy() if dq is None else dq,
+#             Kp = self.Kp.copy() if Kp is None else Kp,
+#             Kd = self.Kd.copy() if Kd is None else Kd,
+#             tau = self.tau.copy() if tau is None else tau,
+#         )
 
 
 def to_observation(state, action_history):
-    print("hey")
-
     obs = []
     imu_quaternion = state.imu.quaternion
     obs.extend(utils.quatToEuler(imu_quaternion)[:2])
@@ -203,9 +202,6 @@ def to_observation(state, action_history):
 
     for i in range(12):
         obs.append(state.motorState[i].dq)
-
-    print(obs)
-
     obs.extend(action_history[-1][0])
     obs += [0] * 4
     return np.array(obs, dtype=np.float32)
@@ -228,17 +224,11 @@ def push_history(deq, e):
 def main(args):
     device = 'cpu'
 
-    prop_enc_pth = 'src/models/prop_encoder_1200.pt'
-    mlp_pth = 'src/models/mlp_1200.pt'
-    mean_file = 'src/models/mean1200.csv'
-    var_file = 'src/models/var1200.csv'
-
-    # prop_enc_pth = 'src/models_new/prop_encoder_400.pt'
-    # mlp_pth = 'src/models_new/mlp_400.pt'
-    # mean_file = 'src/models_new/mean400.csv'
-    # var_file = 'src/models_new/var400.csv'
-
-    # udp = sdk.UDP(LOCAL_PORT, TARGET_IP, TARGET_PORT, LOW_CMD_LENGTH, LOW_STATE_LENGTH, -1)
+    prop_enc_pth = 'src/models_new/prop_encoder_400.pt'
+    mlp_pth = 'src/models_new/mlp_400.pt'
+    mean_file = 'src/models_new/mean400.csv'
+    var_file = 'src/models_new/var400.csv'
+    
     udp = sdk.UDP(LOCAL_PORT, TARGET_IP, TARGET_PORT, LOW_CMD_LENGTH, LOW_STATE_LENGTH, -1)
 
     cmd = sdk.LowCmd()
@@ -262,16 +252,16 @@ def main(args):
     cycle_duration_s = 1.0 / control_freq_hz
     print('Expected cycle duration:', math.ceil(cycle_duration_s * 1000.0), 'ms')      
 
-    if args.real and args.aliengo:        
-        conn = RealAlienGo()
-    if args.real:        
-        conn = RealGo1()
-    else:
-        conn = simulation.Simulation(config) 
-        if args.standpos:
-            conn.set_keyframe(3)
-        else:
-            conn.set_keyframe(0)    
+    # if args.real and args.aliengo:        
+    #     conn = RealAlienGo()
+    # if args.real:        
+    #     conn = RealGo1()
+    # else:
+    #     conn = simulation.Simulation(config) 
+    #     if args.standpos:
+    #         conn.set_keyframe(3)
+    #     else:
+    #         conn.set_keyframe(0)    
     
     # conn.start()
     # if not args.standpos:
@@ -291,7 +281,8 @@ def main(args):
     step = 0
     latent_p = None
     with torch.no_grad():        
-        while args.real or conn.viewer.is_running():
+        # while args.real or conn.viewer.is_running():
+        while args.real:
             start_time = time.time()
 
             print(start_time)
@@ -320,7 +311,6 @@ def main(args):
             # normalize action
             push_history(act_history, action_ll)
             action = act_history[0][0] * 0.4 + action_mean
-            print(action.shape)
             
             # cmd = command.Command(q=action, Kp=[Kp]*12, Kd=[Kd]*12)
             # command = command.Command(q=action, Kp=[Kp]*12, Kd=[Kd]*12)
@@ -328,11 +318,12 @@ def main(args):
             # cmd.clamp_q()
 
             for i in range(12):
-                cmd.motorCmd[i].q = command.get_command(i)[0]
-                cmd.motorCmd[i].dq = command.get_command(i)[1]
-                cmd.motorCmd[i].Kp = command.get_command(i)[2]
-                cmd.motorCmd[i].Kd = command.get_command(i)[3]
-                cmd.motorCmd[i].tau = command.get_command(i)[4]
+                setup_motor(cmd, i, *command.get_command(i))
+                # cmd.motorCmd[i].q = command.get_command(i)[0]
+                # cmd.motorCmd[i].dq = command.get_command(i)[1]
+                # cmd.motorCmd[i].Kp = command.get_command(i)[2]
+                # cmd.motorCmd[i].Kd = command.get_command(i)[3]
+                # cmd.motorCmd[i].tau = command.get_command(i)[4]
 
             udp.SetSend( cmd )
             udp.Send() 

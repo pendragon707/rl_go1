@@ -52,8 +52,6 @@ def standup(cmd, conn, viewer = None, aliengo = True, udp = None):
                 # conn.set_cmd( positions.laydown_command().aliengo_cmd() )
                 # conn.send( positions.laydown_command().aliengo_cmd() )
 
-                print("fasa 1")
-
                 com = positions.laydown_command()
 
                 for i in range(12):
@@ -67,13 +65,10 @@ def standup(cmd, conn, viewer = None, aliengo = True, udp = None):
                 udp.Send()                                
             else:
                 conn.send(positions.laydown_command().robot_cmd())
-        elif phase == 2:
-            print("fasa 2")
-
+        elif phase == 2:            
             q_step = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
             command = stand_command.copy(q = q_step)
-            if aliengo:   
-                # print( cmd.aliengo_cmd() )             
+            if aliengo:                            
                 # conn.send(cmd.aliengo_cmd())
 
                 # conn.set_cmd( cmd.aliengo_cmd() )
@@ -126,16 +121,6 @@ def main():
 
         viewer = None
     else:
-        # TARGET_PORT = 8007
-        # LOCAL_PORT = 8082
-        # TARGET_IP = "192.168.123.10"   # target IP address
-        # LOW_CMD_LENGTH = 610
-        # LOW_STATE_LENGTH = 771
-        # LOCAL_IP = "192.168.123.200" 
-
-        # TEMP = (LOCAL_PORT, TARGET_IP, TARGET_PORT, LOCAL_IP)
-
-        # conn = RealGo1(TEMP)
         conn = RealGo1()
         conn.start()
         viewer = None
