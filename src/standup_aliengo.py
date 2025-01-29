@@ -1,5 +1,6 @@
 import time
-from freedogs2py_bridge import RealGo1, RealAlienGo
+# from freedogs2py_bridge import RealGo1, RealAlienGo
+from freedogs2py_bridge import RealGo1
 import simulation
 
 import config
@@ -10,21 +11,77 @@ import sys
 sys.path.append('./submodules/unitree_legged_sdk/lib/python/amd64')
 import robot_interface_aliengo as sdk
 
-# to do: move to _config_ or to unitree_legged_sdk 
-TARGET_PORT = 8007
-LOCAL_PORT = 8082
-TARGET_IP = "192.168.123.10"   # target IP address
-LOW_CMD_LENGTH = 610
-LOW_STATE_LENGTH = 771
+
+# TARGET_PORT = 8007
+# LOCAL_PORT = 8082
+# TARGET_IP = "192.168.123.10"   # target IP address
+# LOW_CMD_LENGTH = 610
+# LOW_STATE_LENGTH = 771
+
+# ALIENGO_LOW_WIRED_DEFAULTS = (LOCAL_PORT, TARGET_IP, TARGET_PORT, LOW_CMD_LENGTH, LOW_STATE_LENGTH, -1) 
+
+# HIGHLEVEL = 0x00
+# LOWLEVEL  = 0xff
+
+import sys
+sys.path.append("./src/robots")
+# sys.path.append("./go")
+# sys.path.append("./simulation")
+
+# from robots.aliengo.aliengo_consts import ALIENGO_LOW_WIRED_DEFAULTS, LOWLEVEL
+from robots import ALIENGO_LOW_WIRED_DEFAULTS, LOWLEVEL
+from safety import Safety
+
+class RealAlienGo():
+
+    def __init__(self, settings=ALIENGO_LOW_WIRED_DEFAULTS, safe = True):
+        self.udp = sdk.UDP(*settings)
+        
+        self.cmd = sdk.LowCmd()
+        self.state = sdk.LowState()
+        self.udp.InitCmdData(self.cmd)
+        self.cmd.levelFlag = LOWLEVEL
+
+        self.safety = Safety()
+
+    def start(self):        
+        # self.cmd = sdk.LowCmd()
+        # self.state = sdk.LowState()
+        # self.udp.InitCmdData(self.cmd)
+        # self.cmd.levelFlag = LOWLEVEL
+    
+        pass
+
+    def check_motor_ranges(self):
+        pass
+
+    def set_cmd(self, motor_state):
+        for i in range(12):
+            self.cmd.motorCmd[i].q = motor_state.get_command(i)[0]
+            self.cmd.motorCmd[i].dq = motor_state.get_command(i)[1]
+            self.cmd.motorCmd[i].Kp = motor_state.get_command(i)[2]
+            self.cmd.motorCmd[i].Kd = motor_state.get_command(i)[3]
+            self.cmd.motorCmd[i].tau = motor_state.get_command(i)[4]
+
+    def send(self):
+        self.udp.SetSend( self.cmd )   
+        self.udp.Send()
+
+    # def recv(self):
+    #     # state = sdk.LowState()
+    #     self.udp.Recv()
+    #     # self.udp.GetRecv(state)
+
+    def wait_latest_state(self):
+        self.udp.Recv()
+        return self.udp.GetRecv(self.state)
 
 
-ALIENGO_LOW_WIRED_DEFAULTS = (LOCAL_PORT, TARGET_IP, TARGET_PORT, LOW_CMD_LENGTH, LOW_STATE_LENGTH, -1) 
 
-# to do: move this values to unitree_legged_sdk 
-HIGHLEVEL = 0x00
-LOWLEVEL  = 0xff
 
-def standup(cmd, conn, viewer = None, aliengo = True, udp = None):
+
+# def standup(cmd, conn, viewer = None, aliengo = True, udp = None):
+def standup(conn : RealAlienGo, viewer = None, aliengo = True):
     phase = 0
     phase_cycles = 0
 
@@ -32,39 +89,49 @@ def standup(cmd, conn, viewer = None, aliengo = True, udp = None):
     while viewer is None or viewer.is_running():
         # state = conn.wait_latest_state()
 
+        """
         state = sdk.LowState()
         udp.Recv()
         udp.GetRecv(state)
-                
-        # for i in range(12):        
-        #     print(state.motorState[ i ].q, end = " ") 
+        """
+
+        state = conn.wait_latest_state()
         
         if phase == 0:
             if phase_cycles >= 100:
                 phase = 1
                 phase_cycles = 0
+
         elif phase == 1:
             if phase_cycles >= 100:
                 phase = 2
                 phase_cycles = 0
                 init_q = utils.q_vec(state)
+
             if aliengo:     
                 # conn.set_cmd( positions.laydown_command().aliengo_cmd() )
                 # conn.send( positions.laydown_command().aliengo_cmd() )
-
+                
+                """
                 com = positions.laydown_command()
 
                 for i in range(12):
-                    cmd.motorCmd[i].q = com.get_command(i)[0]
-                    cmd.motorCmd[i].dq = com.get_command(i)[1]
-                    cmd.motorCmd[i].Kp = com.get_command(i)[2]
-                    cmd.motorCmd[i].Kd = com.get_command(i)[3]
-                    cmd.motorCmd[i].tau = com.get_command(i)[4]
+                    self.cmd.motorCmd[i].q = com.get_command(i)[0]
+                    self.cmd.motorCmd[i].dq = com.get_command(i)[1]
+                    self.cmd.motorCmd[i].Kp = com.get_command(i)[2]
+                    self.cmd.motorCmd[i].Kd = com.get_command(i)[3]
+                    self.cmd.motorCmd[i].tau = com.get_command(i)[4]
 
                 udp.SetSend( cmd )
-                udp.Send()                                
+                udp.Send()   
+                """
+
+                conn.set_cmd(positions.laydown_command())
+                conn.send()
+
             else:
                 conn.send(positions.laydown_command().robot_cmd())
+
         elif phase == 2:            
             q_step = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
             command = stand_command.copy(q = q_step)
@@ -74,6 +141,7 @@ def standup(cmd, conn, viewer = None, aliengo = True, udp = None):
                 # conn.set_cmd( cmd.aliengo_cmd() )
                 # conn.send( cmd.aliengo_cmd() )
 
+                """
                 for i in range(12):
                     cmd.motorCmd[i].q = command.get_command(i)[0]
                     cmd.motorCmd[i].dq = command.get_command(i)[1]
@@ -83,15 +151,19 @@ def standup(cmd, conn, viewer = None, aliengo = True, udp = None):
 
                 udp.SetSend( cmd )
                 udp.Send() 
+                """
+                conn.set_cmd(command)
+                conn.send()
 
             else:
+                """
                 udp.SetSend( cmd )
                 udp.Send() 
-
-                # conn.send(cmd.robot_cmd())
+                """
+                conn.send(command.robot_cmd())
 
             if phase_cycles == 500:
-                return state, cmd        
+                return state, command       
 
         phase_cycles += 1
         time.sleep(0.01)
@@ -109,15 +181,18 @@ def main():
         conn.start()
         viewer = conn.viewer
     elif aliengo:        
-        # conn = RealAlienGo()
+        conn = RealAlienGo()
         # conn.start()
 
-        udp = sdk.UDP(LOCAL_PORT, TARGET_IP, TARGET_PORT, LOW_CMD_LENGTH, LOW_STATE_LENGTH, -1)
+        """
+        # udp = sdk.UDP(LOCAL_PORT, TARGET_IP, TARGET_PORT, LOW_CMD_LENGTH, LOW_STATE_LENGTH, -1)
+        udp = sdk.UDP(*ALIENGO_LOW_WIRED_DEFAULTS)
         
         cmd = sdk.LowCmd()
         state = sdk.LowState()
         udp.InitCmdData(cmd)
         cmd.levelFlag = LOWLEVEL
+        """
 
         viewer = None
     else:
@@ -128,31 +203,17 @@ def main():
     time.sleep(0.2)
 
     # _, cmd = standup(conn, viewer, aliengo)
-    _, command = standup(cmd, conn, viewer, aliengo, udp)
-    # while viewer is None or viewer.is_running():
-    #     if aliengo:   
-    #         # conn.set_cmd( cmd.aliengo_cmd() )         
-    #         # conn.send( cmd.aliengo_cmd() )
+    # _, command = standup(cmd, conn, viewer, aliengo, udp)
+    _, command = standup(conn, viewer, aliengo)
 
-    #         print("IM here")
+    while viewer is None or viewer.is_running():
+        if aliengo:   
+            conn.set_cmd( command )         
+            conn.send( )
+        else:
+            conn.send(command.robot_cmd())
 
-    #         for i in range(12):
-    #             cmd.motorCmd[i].q = command.get_command(i)[0]
-    #             cmd.motorCmd[i].dq = command.get_command(i)[1]
-    #             cmd.motorCmd[i].Kp = command.get_command(i)[2]
-    #             cmd.motorCmd[i].Kd = command.get_command(i)[3]
-    #             cmd.motorCmd[i].tau = command.get_command(i)[4]
-
-    #         udp.SetSend( cmd )
-    #         udp.Send()
-
-    #     else:
-    #         udp.SetSend( cmd )
-    #         udp.Send() 
-            
-            # conn.send(lcmd.robot_cmd())
-
-        # time.sleep(0.01)    
+        time.sleep(0.01)  
 
 
 if __name__ == '__main__':
