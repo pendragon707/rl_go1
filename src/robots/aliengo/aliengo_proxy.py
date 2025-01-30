@@ -3,7 +3,7 @@ import sys
 sys.path.append('./submodules/unitree_legged_sdk/lib/python/amd64')
 import robot_interface_aliengo as sdk
 
-from src.robots.aliengo import ALIENGO_LOW_WIRED_DEFAULTS, LOWLEVEL
+from src.robots.aliengo import ALIENGO_LOW_WIRED_DEFAULTS, LOWLEVEL, motors_aliengo_pos_range
 from src.safety import Safety
 
 class RealAlienGo():
@@ -27,7 +27,12 @@ class RealAlienGo():
         pass
 
     def check_motor_ranges(self):
-        pass
+        for no, motor_pos_range in enumerate(motors_aliengo_pos_range):
+            q = self.cmd.motorCmd[no].q
+            if q < motor_pos_range[1]:
+                print(f'WARNING! Motor command {motor_pos_range[0]} ({no}) q = {q} < {motor_pos_range[1]}')
+            elif q > motor_pos_range[2]:
+                print(f'WARNING! Motor command {motor_pos_range[0]} ({no}) q = {q} > {motor_pos_range[2]}')
 
     def set_cmd(self, motor_state):
         for i in range(12):
@@ -38,6 +43,7 @@ class RealAlienGo():
             self.cmd.motorCmd[i].tau = motor_state.get_command(i)[4]
 
     def send(self):
+        # self.check_motor_ranges()
         self.udp.SetSend( self.cmd )   
         self.udp.Send()
 
