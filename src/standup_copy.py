@@ -96,7 +96,7 @@ def standup(cmd, conn, viewer = None, aliengo = True, udp = None):
                 # conn.send(cmd.robot_cmd())
 
             if phase_cycles == 500:
-                return state, cmd        
+                return state, command      
 
         phase_cycles += 1
         time.sleep(0.01)
@@ -144,30 +144,30 @@ def main():
 
     # _, cmd = standup(conn, viewer, aliengo)
     _, command = standup(cmd, conn, viewer, aliengo, udp)
-    # while viewer is None or viewer.is_running():
-    #     if aliengo:   
-    #         # conn.set_cmd( cmd.aliengo_cmd() )         
-    #         # conn.send( cmd.aliengo_cmd() )
+    while viewer is None or viewer.is_running():
+        if aliengo:   
+            # conn.set_cmd( cmd.aliengo_cmd() )         
+            # conn.send( cmd.aliengo_cmd() )
 
-    #         print("IM here")
+            print("IM here")
 
-    #         for i in range(12):
-    #             cmd.motorCmd[i].q = command.get_command(i)[0]
-    #             cmd.motorCmd[i].dq = command.get_command(i)[1]
-    #             cmd.motorCmd[i].Kp = command.get_command(i)[2]
-    #             cmd.motorCmd[i].Kd = command.get_command(i)[3]
-    #             cmd.motorCmd[i].tau = command.get_command(i)[4]
+            for i in range(12):
+                cmd.motorCmd[i].q = command.get_command(i)[0]
+                cmd.motorCmd[i].dq = command.get_command(i)[1]
+                cmd.motorCmd[i].Kp = command.get_command(i)[2]
+                cmd.motorCmd[i].Kd = command.get_command(i)[3]
+                cmd.motorCmd[i].tau = command.get_command(i)[4]
 
-    #         udp.SetSend( cmd )
-    #         udp.Send()
+            udp.SetSend( cmd )
+            udp.Send()
 
-    #     else:
-    #         udp.SetSend( cmd )
-    #         udp.Send() 
+        else:
+            udp.SetSend( cmd )
+            udp.Send() 
             
-            # conn.send(lcmd.robot_cmd())
+            conn.send(lcmd.robot_cmd())
 
-        # time.sleep(0.01)    
+        time.sleep(0.01)    
 
 
 if __name__ == '__main__':
