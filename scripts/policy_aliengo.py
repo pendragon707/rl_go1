@@ -1,17 +1,21 @@
-import argparse
-import config
+import os
+import sys
+print(os.getcwd())
+sys.path.append(os.getcwd())
 
+import argparse
 import math
 import time
 import torch
 import numpy as np
 from collections import deque
-import utils
 
-import time
-import simulation
-import command
-import standup
+from src import utils
+from src import config
+from src.robots.simulation import simulation
+from src import command
+
+from standup_aliengo import standup
 
 import src.config as config
 import src.utils as utils
@@ -20,7 +24,6 @@ import src.positions as positions
 from src.robots import RealAlienGo, RealGo1
 from src.robots.simulation.simulation import Simulation
 
-import sys
 sys.path.append("./submodules/free-dog-sdk/")
 from ucl.lowCmd import lowCmd
 from ucl.lowState import lowState
@@ -131,7 +134,7 @@ def main(args):
     
     conn.start()
     if not args.standpos:
-        standup.standup(conn)
+        standup(conn, None, args.aliengo)
     
     obs = to_observation(conn.wait_latest_state(), act_history)
     obs_history = deque([obs]*50, maxlen=51)

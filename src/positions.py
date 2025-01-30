@@ -1,4 +1,4 @@
-import command
+from src import command
 
 
 # laydown_q = [

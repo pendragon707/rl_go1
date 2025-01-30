@@ -1,15 +1,19 @@
 import time
-from freedogs2py_bridge import RealGo1, RealAlienGo
-import simulation
-
-import config
-import positions
 import utils
-
+import os
 import sys
+
+print(os.getcwd())
+sys.path.append(os.getcwd())
+
+from src.freedogs2py_bridge import RealGo1, RealAlienGo
+from src import simulation
+
+from src import config
+from src import positions
+
 sys.path.append('./submodules/unitree_legged_sdk/lib/python/amd64')
 import robot_interface_aliengo as sdk
-
 
 
 def standup(conn, viewer = None, aliengo = False):
@@ -32,21 +36,21 @@ def standup(conn, viewer = None, aliengo = False):
                 phase = 2
                 phase_cycles = 0
                 init_q = utils.q_vec(state)
-            if aliengo:     
-                conn.set_cmd( positions.laydown_command().aliengo_cmd() )
-                conn.send( positions.laydown_command().aliengo_cmd() )
-            else:
-                conn.send(positions.laydown_command().robot_cmd())
+            # if aliengo:     
+            #     conn.set_cmd( positions.laydown_command().aliengo_cmd() )
+            #     conn.send( positions.laydown_command().aliengo_cmd() )
+            # else:
+            conn.send(positions.laydown_command().robot_cmd())
         elif phase == 2:
             q_step = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
             cmd = stand_command.copy(q = q_step)
-            if aliengo:   
-                # print( cmd.aliengo_cmd() )             
-                # conn.send(cmd.aliengo_cmd())
-                conn.set_cmd( cmd.aliengo_cmd() )
-                conn.send( cmd.aliengo_cmd() )
-            else:
-                conn.send(cmd.robot_cmd())
+            # if aliengo:   
+            #     # print( cmd.aliengo_cmd() )             
+            #     # conn.send(cmd.aliengo_cmd())
+            #     conn.set_cmd( cmd.aliengo_cmd() )
+            #     conn.send( cmd.aliengo_cmd() )
+            # else:
+            conn.send(cmd.robot_cmd())
 
             if phase_cycles == 500:
                 return state, cmd        
@@ -57,7 +61,7 @@ def standup(conn, viewer = None, aliengo = False):
 def main():
     config.ENABLE_SIMULATION = True
 
-    real = True
+    real = False
     aliengo = True
     conn = None
 
@@ -88,11 +92,11 @@ def main():
 
     _, cmd = standup(conn, viewer, aliengo)
     while viewer is None or viewer.is_running():
-        if aliengo:   
-            conn.set_cmd( cmd.aliengo_cmd() )         
-            conn.send( cmd.aliengo_cmd() )
-        else:
-            conn.send(cmd.robot_cmd())
+        # if aliengo:   
+        #     conn.set_cmd( cmd.aliengo_cmd() )         
+        #     conn.send( cmd.aliengo_cmd() )
+        # else:
+        conn.send(cmd.robot_cmd())
 
         time.sleep(0.01)
 

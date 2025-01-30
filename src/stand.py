@@ -1,8 +1,8 @@
 import time
-import simulation
 
-import config
-import positions
+from src import simulation
+from src import config
+from src import positions
 
 
 config.ENABLE_SIMULATION = True

@@ -9,7 +9,7 @@ from ucl.enums import MotorModeLow
 sys.path.append('./submodules/unitree_legged_sdk/lib/python/amd64')
 import robot_interface_aliengo as sdk
 
-import constants
+from src import constants
 
 
 class Command:

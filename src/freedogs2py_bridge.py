@@ -12,8 +12,8 @@ from ucl.unitreeConnection import unitreeConnection, LOW_WIRED_DEFAULTS
 sys.path.append('./submodules/unitree_legged_sdk/lib/python/amd64')
 import robot_interface_aliengo as sdk
 
-import constants
-import monitoring
+from src import constants
+from src import monitoring
 
 
 class RobotProxy(ABC):

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import typing
 import time
 
-import constants
+import src.constants as constants
 from src.monitoring import Monitoring
 
 

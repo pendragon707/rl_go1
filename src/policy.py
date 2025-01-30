@@ -1,6 +1,10 @@
-import argparse
-import config
+import os
+import sys
 
+print(os.getcwd())
+sys.path.append(os.getcwd())
+
+import argparse
 import math
 import time
 import torch
@@ -8,11 +12,11 @@ import numpy as np
 from collections import deque
 import utils
 
-import time
-import simulation
-import command
-import standup
-from freedogs2py_bridge import RealGo1, RealAlienGo
+from src import config
+from src import simulation
+from src import command
+from src import standup
+from src.freedogs2py_bridge import RealGo1, RealAlienGo
 
 import sys
 

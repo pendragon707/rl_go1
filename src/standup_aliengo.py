@@ -1,13 +1,18 @@
 import time
-# from freedogs2py_bridge import RealGo1, RealAlienGo
-from freedogs2py_bridge import RealGo1
-import simulation
 
-import config
-import positions
-import utils
-
+import os
 import sys
+
+print(os.getcwd())
+sys.path.append(os.getcwd())
+
+# from freedogs2py_bridge import RealGo1, RealAlienGo
+from src.freedogs2py_bridge import RealGo1
+from src import simulation
+from src import config
+from src import positions
+from src import utils
+
 sys.path.append('./submodules/unitree_legged_sdk/lib/python/amd64')
 import robot_interface_aliengo as sdk
 
@@ -23,14 +28,10 @@ import robot_interface_aliengo as sdk
 # HIGHLEVEL = 0x00
 # LOWLEVEL  = 0xff
 
-import sys
-sys.path.append("./src/robots")
-# sys.path.append("./go")
-# sys.path.append("./simulation")
 
 # from robots.aliengo.aliengo_consts import ALIENGO_LOW_WIRED_DEFAULTS, LOWLEVEL
-from robots import ALIENGO_LOW_WIRED_DEFAULTS, LOWLEVEL
-from safety import Safety
+from src.robots.aliengo import ALIENGO_LOW_WIRED_DEFAULTS, LOWLEVEL
+from src.safety import Safety
 
 class RealAlienGo():
 

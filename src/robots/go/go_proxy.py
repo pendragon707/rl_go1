@@ -9,7 +9,7 @@ from ucl.unitreeConnection import unitreeConnection, LOW_WIRED_DEFAULTS
 
 import sys
 sys.path.append("./src/robots")
-from robots import RobotProxy
+from src.robots.abstract_proxy import RobotProxy
 
 class RealGo1(RobotProxy):
     def __init__(self, settings=LOW_WIRED_DEFAULTS):

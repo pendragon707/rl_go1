@@ -1,5 +1,10 @@
+import os
+import sys
+
+print(os.getcwd())
+sys.path.append(os.getcwd())
+
 import argparse
-import config
 
 import math
 import time
@@ -8,12 +13,12 @@ import numpy as np
 from collections import deque
 import utils
 
-import time
-import simulation
-import command
-import positions
-import standup
-from freedogs2py_bridge import RealGo1
+from src import config
+from src.robots.simulation import simulation
+from src import command
+from src import positions
+from src import standup
+from src.freedogs2py_bridge import RealGo1
 
 import sys
 

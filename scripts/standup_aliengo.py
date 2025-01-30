@@ -1,5 +1,10 @@
 import time
 
+import os
+import sys
+print(os.getcwd())
+sys.path.append(os.getcwd())
+
 import src.config as config
 import src.utils as utils
 import src.positions as positions
@@ -15,9 +20,7 @@ def standup(conn : RealAlienGo, viewer = None, aliengo = True):
 
     stand_command = positions.stand_command_2()
     while viewer is None or viewer.is_running():
-        # state = conn.wait_latest_state()
-
-        state = conn.get_state()
+        state = conn.wait_latest_state()
         
         if phase == 0:
             if phase_cycles >= 100:
@@ -64,8 +67,8 @@ def standup(conn : RealAlienGo, viewer = None, aliengo = True):
 def main():
     config.ENABLE_SIMULATION = True
 
-    real = True
-    aliengo = True
+    real = False
+    aliengo = False
     conn = None
 
     if not real:
