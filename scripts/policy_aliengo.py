@@ -33,28 +33,6 @@ from ucl.unitreeConnection import unitreeConnection, LOW_WIRED_DEFAULTS
 sys.path.append('./submodules/unitree_legged_sdk/lib/python/amd64')
 import robot_interface_aliengo as sdk
 
-# to do: move to _config_ or to unitree_legged_sdk 
-TARGET_PORT = 8007
-LOCAL_PORT = 8082
-TARGET_IP = "192.168.123.10"   # target IP address
-LOW_CMD_LENGTH = 610
-LOW_STATE_LENGTH = 771
-
-
-ALIENGO_LOW_WIRED_DEFAULTS = (LOCAL_PORT, TARGET_IP, TARGET_PORT, LOW_CMD_LENGTH, LOW_STATE_LENGTH, -1) 
-
-# to do: move this values to unitree_legged_sdk 
-HIGHLEVEL = 0x00
-LOWLEVEL  = 0xff
-
-
-def setup_motor(cmd, num_motor, q, dq, Kp, Kd, tau):
-    cmd.motorCmd[num_motor].q = q
-    cmd.motorCmd[num_motor].dq = dq
-    cmd.motorCmd[num_motor].Kp = Kp
-    cmd.motorCmd[num_motor].Kd = Kd
-    cmd.motorCmd[num_motor].tau = tau
-
 
 def to_observation(state, action_history):
     obs = []
@@ -93,15 +71,6 @@ def main(args):
     mlp_pth = Path(os.getcwd()) / 'src/models/mlp_1200.pt'
     mean_file = Path(os.getcwd()) / 'src/models/mean1200.csv'
     var_file = Path(os.getcwd()) / 'src/models/var1200.csv'
-
-    """
-    udp = sdk.UDP(LOCAL_PORT, TARGET_IP, TARGET_PORT, LOW_CMD_LENGTH, LOW_STATE_LENGTH, -1)
-    
-    cmd = sdk.LowCmd()
-    state = sdk.LowState()
-    udp.InitCmdData(cmd)
-    cmd.levelFlag = LOWLEVEL
-    """
 
     prop_loaded_encoder = torch.jit.load(prop_enc_pth).to(device)
     loaded_mlp = torch.jit.load(mlp_pth).to(device)
@@ -163,21 +132,6 @@ def main(args):
             
             command = Command(q=action, Kp=[Kp]*12, Kd=[Kd]*12)
             # cmd.clamp_q()
-
-            # for i in range(12):
-            #     cmd.motorCmd[i].q = command.get_command(i)[0]
-            #     cmd.motorCmd[i].dq = command.get_command(i)[1]
-            #     cmd.motorCmd[i].Kp = command.get_command(i)[2]
-            #     cmd.motorCmd[i].Kd = command.get_command(i)[3]
-            #     cmd.motorCmd[i].tau = command.get_command(i)[4]
-
-            """
-            for i in range( 12 ):
-                setup_motor(cmd, i, *command.get_command(i))
-
-            udp.SetSend( cmd )
-            udp.Send() 
-            """
 
             if args.aliengo:
                 conn.set_cmd(command)
