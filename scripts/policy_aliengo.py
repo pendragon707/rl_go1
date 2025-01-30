@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import sys
 print(os.getcwd())
 sys.path.append(os.getcwd())
@@ -13,7 +14,7 @@ from collections import deque
 from src import utils
 from src import config
 from src.robots.simulation import simulation
-from src import command
+from src.command import Command
 
 from standup_aliengo import standup
 
@@ -88,22 +89,19 @@ def push_history(deq, e):
 def main(args):
     device = 'cpu'
 
-    # prop_enc_pth = 'src/models/prop_encoder_1200.pt'
-    # mlp_pth = 'src/models/mlp_1200.pt'
-    # mean_file = 'src/models/mean1200.csv'
-    # var_file = 'src/models/var1200.csv'
+    prop_enc_pth = Path(os.getcwd()) / 'src/models/prop_encoder_1200.pt'
+    mlp_pth = Path(os.getcwd()) / 'src/models/mlp_1200.pt'
+    mean_file = Path(os.getcwd()) / 'src/models/mean1200.csv'
+    var_file = Path(os.getcwd()) / 'src/models/var1200.csv'
 
-    prop_enc_pth = 'src/models_new/prop_encoder_400.pt'
-    mlp_pth = 'src/models_new/mlp_400.pt'
-    mean_file = 'src/models_new/mean400.csv'
-    var_file = 'src/models_new/var400.csv'
-
+    """
     udp = sdk.UDP(LOCAL_PORT, TARGET_IP, TARGET_PORT, LOW_CMD_LENGTH, LOW_STATE_LENGTH, -1)
     
     cmd = sdk.LowCmd()
     state = sdk.LowState()
     udp.InitCmdData(cmd)
     cmd.levelFlag = LOWLEVEL
+    """
 
     prop_loaded_encoder = torch.jit.load(prop_enc_pth).to(device)
     loaded_mlp = torch.jit.load(mlp_pth).to(device)
@@ -163,8 +161,7 @@ def main(args):
             push_history(act_history, action_ll)
             action = act_history[0][0] * 0.4 + action_mean
             
-            # cmd = command.Command(q=action, Kp=[Kp]*12, Kd=[Kd]*12)
-            command = command.Command(q=action, Kp=[Kp]*12, Kd=[Kd]*12)
+            command = Command(q=action, Kp=[Kp]*12, Kd=[Kd]*12)
             # cmd.clamp_q()
 
             # for i in range(12):
@@ -174,16 +171,19 @@ def main(args):
             #     cmd.motorCmd[i].Kd = command.get_command(i)[3]
             #     cmd.motorCmd[i].tau = command.get_command(i)[4]
 
+            """
             for i in range( 12 ):
                 setup_motor(cmd, i, *command.get_command(i))
 
             udp.SetSend( cmd )
             udp.Send() 
+            """
 
-            # if args.aliengo:
-            #     conn.send(cmd.aliengo_cmd())
-            # else:
-            #     conn.send(cmd.robot_cmd())
+            if args.aliengo:
+                conn.set_cmd(command)
+                conn.send()
+            else:
+                conn.send(command.robot_cmd())
                        
             duration = time.time() - start_time
             if duration < cycle_duration_s:
