@@ -43,15 +43,13 @@ class RealAlienGo():
         self.udp.InitCmdData(self.cmd)
         self.cmd.levelFlag = LOWLEVEL
 
-        self.safety = Safety()
+        # self.safety = Safety()
 
     def start(self):        
-        # self.cmd = sdk.LowCmd()
-        # self.state = sdk.LowState()
-        # self.udp.InitCmdData(self.cmd)
-        # self.cmd.levelFlag = LOWLEVEL
-    
-        pass
+        self.cmd = sdk.LowCmd()
+        self.state = sdk.LowState()
+        self.udp.InitCmdData(self.cmd)
+        self.cmd.levelFlag = LOWLEVEL
 
     def check_motor_ranges(self):
         pass
@@ -68,12 +66,8 @@ class RealAlienGo():
         self.udp.SetSend( self.cmd )   
         self.udp.Send()
 
-    # def recv(self):
-    #     # state = sdk.LowState()
-    #     self.udp.Recv()
-    #     # self.udp.GetRecv(state)
-
     def wait_latest_state(self):
+        self.state = sdk.LowState()
         self.udp.Recv()
         return self.udp.GetRecv(self.state)
 
@@ -87,16 +81,15 @@ def standup(conn : RealAlienGo, viewer = None, aliengo = True):
     phase_cycles = 0
 
     stand_command = positions.stand_command_2()
-    while viewer is None or viewer.is_running():
-        # state = conn.wait_latest_state()
+    while viewer is None or viewer.is_running():        
+        state = conn.wait_latest_state()
+        print(state)
 
         """
         state = sdk.LowState()
         udp.Recv()
         udp.GetRecv(state)
-        """
-
-        state = conn.wait_latest_state()
+        """        
         
         if phase == 0:
             if phase_cycles >= 100:
@@ -109,10 +102,10 @@ def standup(conn : RealAlienGo, viewer = None, aliengo = True):
                 phase_cycles = 0
                 init_q = utils.q_vec(state)
 
-            if aliengo:     
-                # conn.set_cmd( positions.laydown_command().aliengo_cmd() )
-                # conn.send( positions.laydown_command().aliengo_cmd() )
-                
+            if aliengo:      
+                conn.set_cmd(positions.laydown_command())
+                conn.send()
+
                 """
                 com = positions.laydown_command()
 
@@ -127,9 +120,6 @@ def standup(conn : RealAlienGo, viewer = None, aliengo = True):
                 udp.Send()   
                 """
 
-                conn.set_cmd(positions.laydown_command())
-                conn.send()
-
             else:
                 conn.send(positions.laydown_command().robot_cmd())
 
@@ -137,10 +127,8 @@ def standup(conn : RealAlienGo, viewer = None, aliengo = True):
             q_step = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
             command = stand_command.copy(q = q_step)
             if aliengo:                            
-                # conn.send(cmd.aliengo_cmd())
-
-                # conn.set_cmd( cmd.aliengo_cmd() )
-                # conn.send( cmd.aliengo_cmd() )
+                conn.set_cmd(command)
+                conn.send()
 
                 """
                 for i in range(12):
@@ -153,8 +141,6 @@ def standup(conn : RealAlienGo, viewer = None, aliengo = True):
                 udp.SetSend( cmd )
                 udp.Send() 
                 """
-                conn.set_cmd(command)
-                conn.send()
 
             else:
                 """
@@ -183,7 +169,7 @@ def main():
         viewer = conn.viewer
     elif aliengo:        
         conn = RealAlienGo()
-        # conn.start()
+        conn.start()
 
         """
         # udp = sdk.UDP(LOCAL_PORT, TARGET_IP, TARGET_PORT, LOW_CMD_LENGTH, LOW_STATE_LENGTH, -1)

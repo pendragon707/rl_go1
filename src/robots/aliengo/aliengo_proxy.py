@@ -16,15 +16,15 @@ class RealAlienGo():
         self.udp.InitCmdData(self.cmd)
         self.cmd.levelFlag = LOWLEVEL
 
-        self.safety = Safety()
+        # self.safety = Safety()
         
     def start(self):        
-        # self.cmd = sdk.LowCmd()
-        # self.state = sdk.LowState()
-        # self.udp.InitCmdData(self.cmd)
-        # self.cmd.levelFlag = LOWLEVEL
+        self.cmd = sdk.LowCmd()
+        self.state = sdk.LowState()
+        self.udp.InitCmdData(self.cmd)
+        self.cmd.levelFlag = LOWLEVEL
     
-        pass
+        # pass
 
     def check_motor_ranges(self):
         pass
@@ -41,11 +41,7 @@ class RealAlienGo():
         self.udp.SetSend( self.cmd )   
         self.udp.Send()
 
-    # def recv(self):
-    #     # state = sdk.LowState()
-    #     self.udp.Recv()
-    #     # self.udp.GetRecv(state)
-
     def wait_latest_state(self):
+        self.state = sdk.LowState()
         self.udp.Recv()
         return self.udp.GetRecv(self.state)
