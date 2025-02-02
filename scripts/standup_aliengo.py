@@ -57,24 +57,26 @@ def standup(conn : RealAlienGo, viewer = None, aliengo = True):
 def main():
     config.ENABLE_SIMULATION = True
 
-    real = True
-    aliengo = True
+    real = False
+    aliengo = False
     conn = None
 
     if not real:
         conn = Simulation(config)
         conn.set_keyframe(0)
+        conn.start()
         
         viewer = conn.viewer
     elif aliengo:        
         conn = RealAlienGo()
+        conn.start()
 
         viewer = None
     else:
         conn = RealGo1()
-        viewer = None
+        conn.start()
 
-    conn.start()
+        viewer = None    
 
     time.sleep(0.2)
     
