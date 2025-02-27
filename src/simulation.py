@@ -8,6 +8,8 @@ import numpy as np
 import mujoco
 import mujoco.viewer
 
+import sys
+sys.path.append("./submodules/free-dog-sdk/")
 from ucl.lowCmd import lowCmd
 from ucl.lowState import lowState
 

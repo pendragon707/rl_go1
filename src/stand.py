@@ -1,5 +1,11 @@
 import time
 
+import os
+import sys
+
+print(os.getcwd())
+sys.path.append(os.getcwd())
+
 from src import simulation
 from src import config
 from src import positions
