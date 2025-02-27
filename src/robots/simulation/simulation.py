@@ -14,8 +14,6 @@ sys.path.append("./submodules/free-dog-sdk/")
 # from ucl.lowCmd import lowCmd
 from ucl.lowState import lowState
 
-# import constants
-# import freedogs2py_bridge
 import src.robots.simulation.sim_constants as constants
 from src.robots.abstract_proxy import RobotProxy
 
