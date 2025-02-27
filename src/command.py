@@ -35,26 +35,6 @@ class Command:
             )
         lcmd.motorCmd = mCmdArr
         return lcmd
-    
-
-    # # dont work
-    # def aliengo_cmd(self, lcmd, p = False):
-    #     # lcmd = sdk.LowCmd() 
-
-    #     # LOWLEVEL  = 0xff  # TEMP!!!!
-    #     # lcmd.levelFlag = LOWLEVEL   
-
-    #     # print(lcmd)             
-    #     # print( type(lcmd) )          
-
-    #     for i in range(12):
-    #         lcmd.motorCmd[i].q = self.q[i].item()
-    #         lcmd.motorCmd[i].dq = self.dq[i].item()
-    #         lcmd.motorCmd[i].Kp = self.Kp[i].item()
-    #         lcmd.motorCmd[i].Kd = self.Kd[i].item()
-    #         lcmd.motorCmd[i].tau = self.tau[i].item()
-        
-    #     return lcmd
 
     def get_command(self, num):
         return (
