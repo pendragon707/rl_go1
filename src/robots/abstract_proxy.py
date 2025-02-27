@@ -19,7 +19,8 @@ class RobotProxy(ABC):
             elif q > motor_pos_range[2]:
                 print(f'WARNING! Motor command {motor_pos_range[0]} ({no}) q = {q} > {motor_pos_range[2]}')
 
-    def send(self, cmd) -> None:
+    def send(self, command) -> None:
+        cmd = command.robot_cmd()
         self.check_motor_ranges(cmd)
         self.monitoring.send_cmd(time.time_ns(), cmd)
         self.send_impl(cmd)

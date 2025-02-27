@@ -134,7 +134,7 @@ def standup(conn : RealAlienGo, viewer = None, aliengo = True):
                 conn.send(positions.laydown_command().robot_cmd())
 
         elif phase == 2:            
-            q_step = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
+            q_step, _ = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
             command = stand_command.copy(q = q_step)
             if aliengo:                            
                 # conn.send(cmd.aliengo_cmd())

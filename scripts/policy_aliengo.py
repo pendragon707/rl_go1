@@ -133,11 +133,12 @@ def main(args):
             command = Command(q=action, Kp=[Kp]*12, Kd=[Kd]*12)
             # cmd.clamp_q()
 
-            if args.aliengo:
-                conn.set_cmd(command)
-                conn.send()
-            else:
-                conn.send(command.robot_cmd())
+            # if args.aliengo:
+            #     conn.set_cmd(command)
+            #     conn.send()
+            # else:
+            #     conn.send(command.robot_cmd())
+            conn.send(command)
                        
             duration = time.time() - start_time
             if duration < cycle_duration_s:

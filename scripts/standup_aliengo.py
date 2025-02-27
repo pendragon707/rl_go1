@@ -1,4 +1,5 @@
 import time
+import argparse
 
 import os
 import sys
@@ -16,37 +17,30 @@ def standup(conn : RealAlienGo, viewer = None, aliengo = True):
     phase = 0
     phase_cycles = 0
 
-    stand_command = positions.stand_command_2()
+    
     while viewer is None or viewer.is_running():
         state = conn.wait_latest_state()
         
         if phase == 0:
             if phase_cycles >= 100:
-                phase = 1
+                phase = 2   
                 phase_cycles = 0
 
         elif phase == 1:
             if phase_cycles >= 100:
                 phase = 2
-                phase_cycles = 0
-                init_q = utils.q_vec(state)
+                phase_cycles = 0              
 
-            if aliengo:     
-                conn.set_cmd(positions.laydown_command())
-                conn.send()
+            conn.send(positions.laydown_command())
 
-            else:
-                conn.send(positions.laydown_command().robot_cmd())
+        elif phase == 2:  
+            init_q = utils.q_vec(state)
+            stand_command = positions.stand_command_2()            
 
-        elif phase == 2:            
-            q_step = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
+            q_step, _ = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
             command = stand_command.copy(q = q_step)
-            if aliengo:                            
-                conn.set_cmd(command)
-                conn.send()
 
-            else:
-                conn.send(command.robot_cmd())
+            conn.send(command)        
 
             if phase_cycles == 500:
                 return state, command       
@@ -54,41 +48,64 @@ def standup(conn : RealAlienGo, viewer = None, aliengo = True):
         phase_cycles += 1
         time.sleep(0.01)
 
-def main():
+def standup_2(conn : RealAlienGo, viewer = None, aliengo = True):
+    phase = 0
+    phase_cycles = 0
+    
+    while viewer is None or viewer.is_running():
+        state = conn.wait_latest_state()
+        
+        if phase == 0:
+            if phase_cycles >= 100:
+                phase = 2   
+                phase_cycles = 0
+
+        elif phase == 2:  
+            init_q = utils.q_vec(state)            
+            stand_command = positions.stand_command_3()
+
+            q_step, _ = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
+            command = stand_command.copy(q = q_step)
+
+            conn.send(command)        
+
+            if phase_cycles == 500:
+                return state, command       
+
+        phase_cycles += 1
+        time.sleep(0.01)
+
+def main(args):
     config.ENABLE_SIMULATION = True
 
-    real = True
-    aliengo = True
-    conn = None
-
-    if not real:
+    if not args.real:
         conn = Simulation(config)
         conn.set_keyframe(0)
+        conn.start()
         
         viewer = conn.viewer
-    elif aliengo:        
+    elif args.aliengo:        
         conn = RealAlienGo()
+        conn.start()
 
         viewer = None
     else:
         conn = RealGo1()
-        viewer = None
-
-    conn.start()
+        conn.start()
+        viewer = None    
 
     time.sleep(0.2)
     
-    _, command = standup(conn, viewer, aliengo)
+    _, command = standup(conn, viewer, args.aliengo)
 
     while viewer is None or viewer.is_running():
-        if aliengo:   
-            conn.set_cmd( command )         
-            conn.send( )
-        else:
-            conn.send(command.robot_cmd())
+        conn.send(command)
 
         time.sleep(0.01)  
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-r', '--real', action='store_true')
+    parser.add_argument('-a', '--aliengo', action='store_true')    
+    main(parser.parse_args())
