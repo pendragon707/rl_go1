@@ -1,11 +1,18 @@
-import command
+from src import command
 
+
+# laydown_q = [
+#     -0.471,  1.17, -2.74, # FR
+#     0.471, 1.17, -2.74, # FL
+#     -0.471,  1.17, -2.75, # RR
+#     0.471, 1.17, -2.75  # RL
+# ]
 
 laydown_q = [
-    -0.471,  1.17, -2.74, # FR
-    0.471, 1.17, -2.74, # FL
-    -0.471,  1.17, -2.75, # RR
-    0.471, 1.17, -2.75  # RL
+    -0.15, 1.18, -2.8, # FR
+    -0.15, 1.18, -2.8,# FL
+    -0.15, 1.18, -2.8, # RR
+    -0.15, 1.18, -2.8  # RL
 ]
 
 
@@ -37,6 +44,13 @@ def stand_command_2():
         Kd = [0.6]*12
     )
 
+def stand_command_3():
+    return command.Command(
+        q = [0.05,  0.8, -1.4, -0.05,  0.8, -1.4, 0.05,  0.8, -1.4,-0.05,  0.8, -1.4],
+        Kp = [120]*12,
+        Kd = [2]*12
+    )
+
 
 def laydown_command():
     Kd = 2
@@ -56,10 +70,17 @@ def laydown_command():
         (2.5, thig_Kp, thig_Kd),
         (-2.75, calf_Kp, calf_Kd)
     ]
-    
+
     return command.CommandFromArray3(
         [hipR] + front_legs +
         [hipL] + front_legs +
         [hipR] + back_legs +
         [hipL] + back_legs
+    )
+
+def laydown_command_2():
+    return command.Command(
+        q = [-0.15, 1.18, -2.8, -0.15, 1.18, -2.8, -0.15, 1.18, -2.8, -0.15, 1.18, -2.8],
+        Kp = [90]*12,
+        Kd = [1]*12
     )

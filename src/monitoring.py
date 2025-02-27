@@ -1,6 +1,6 @@
 import socket
 import cbor2
-import constants
+from src import constants
 
 
 class Monitoring:
