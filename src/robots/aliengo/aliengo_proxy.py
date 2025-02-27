@@ -16,7 +16,7 @@ class RealAlienGo():
         # self.udp.InitCmdData(self.cmd)
         # self.cmd.levelFlag = LOWLEVEL
 
-        self.safety = Safety()
+        # self.safety = Safety()
         
     def start(self):        
         self.cmd = sdk.LowCmd()
@@ -56,5 +56,6 @@ class RealAlienGo():
             self.udp.Send()
 
     def wait_latest_state(self):
+        self.state = sdk.LowState()
         self.udp.Recv()
         return self.udp.GetRecv(self.state)

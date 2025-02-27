@@ -67,10 +67,10 @@ def push_history(deq, e):
 def main(args):
     device = 'cpu'
 
-    prop_enc_pth = Path(os.getcwd()) / 'src/models/prop_encoder_1200.pt'
-    mlp_pth = Path(os.getcwd()) / 'src/models/mlp_1200.pt'
-    mean_file = Path(os.getcwd()) / 'src/models/mean1200.csv'
-    var_file = Path(os.getcwd()) / 'src/models/var1200.csv'
+    prop_enc_pth = Path(os.getcwd()) / 'models/prop_encoder_1200.pt'
+    mlp_pth = Path(os.getcwd()) / 'models/mlp_1200.pt'
+    mean_file = Path(os.getcwd()) / 'models/mean1200.csv'
+    var_file = Path(os.getcwd()) / 'models/var1200.csv'
 
     prop_loaded_encoder = torch.jit.load(prop_enc_pth).to(device)
     loaded_mlp = torch.jit.load(mlp_pth).to(device)

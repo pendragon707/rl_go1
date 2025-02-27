@@ -82,10 +82,12 @@ def main(args):
         conn = Simulation(config)
         conn.set_keyframe(0)
         conn.start()
+        conn.start()
         
         viewer = conn.viewer
     elif args.aliengo:        
         conn = RealAlienGo()
+        conn.start()
         conn.start()
 
         viewer = None
