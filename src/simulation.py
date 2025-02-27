@@ -8,11 +8,13 @@ import numpy as np
 import mujoco
 import mujoco.viewer
 
+import sys
+sys.path.append("./submodules/free-dog-sdk/")
 from ucl.lowCmd import lowCmd
 from ucl.lowState import lowState
 
-import constants
-import freedogs2py_bridge
+from src import constants
+from src import freedogs2py_bridge
 
 
 motor_qpos = {'FL_0': 7, 'FL_1': 8, 'FL_2': 9, 'FR_0': 10, 'FR_1': 11, 'FR_2': 12,

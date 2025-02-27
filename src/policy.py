@@ -1,6 +1,10 @@
-import argparse
-import config
+import os
+import sys
 
+print(os.getcwd())
+sys.path.append(os.getcwd())
+
+import argparse
 import math
 import time
 import torch
@@ -8,11 +12,11 @@ import numpy as np
 from collections import deque
 import utils
 
-import time
-import simulation
-import command
-import standup
-from freedogs2py_bridge import RealGo1, RealAlienGo
+from src import config
+from src import simulation
+from src import command
+from src import standup
+from src.freedogs2py_bridge import RealGo1, RealAlienGo
 
 import sys
 
@@ -61,7 +65,12 @@ def main(args):
     prop_enc_pth = 'src/models/prop_encoder_1200.pt'
     mlp_pth = 'src/models/mlp_1200.pt'
     mean_file = 'src/models/mean1200.csv'
-    var_file = 'src/models/var1200.csv'    
+    var_file = 'src/models/var1200.csv'
+
+    # prop_enc_pth = 'src/models_new/prop_encoder_1200.pt'
+    # mlp_pth = 'src/models_new/mlp_1200.pt'
+    # mean_file = 'src/models_new/mean1200.csv'
+    # var_file = 'src/models_new/var1200.csv'
 
     prop_loaded_encoder = torch.jit.load(prop_enc_pth).to(device)
     loaded_mlp = torch.jit.load(mlp_pth).to(device)
@@ -81,7 +90,7 @@ def main(args):
 
     if args.real and args.aliengo:        
         conn = RealAlienGo()
-    elif args.real and not args.aliengo:
+    if args.real:        
         conn = RealGo1()
     else:
         conn = simulation.Simulation(config) 
@@ -116,13 +125,18 @@ def main(args):
                 action_ll = loaded_mlp(
                     torch.cat([obs_torch[:,42*50:42*(50 + 1)], latent_p], 1)
                 )
+
             # normalize action
             push_history(act_history, action_ll)
             action = act_history[0][0] * 0.4 + action_mean
             
             cmd = command.Command(q=action, Kp=[Kp]*12, Kd=[Kd]*12)
             # cmd.clamp_q()
-            conn.send(cmd.robot_cmd())
+
+            if args.aliengo:
+                conn.send(cmd.aliengo_cmd())
+            else:
+                conn.send(cmd.robot_cmd())
                        
             duration = time.time() - start_time
             if duration < cycle_duration_s:

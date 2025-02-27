@@ -12,8 +12,8 @@ from ucl.unitreeConnection import unitreeConnection, LOW_WIRED_DEFAULTS
 sys.path.append('./submodules/unitree_legged_sdk/lib/python/amd64')
 import robot_interface_aliengo as sdk
 
-import constants
-import monitoring
+from src import constants
+from src import monitoring
 
 
 class RobotProxy(ABC):
@@ -30,6 +30,7 @@ class RobotProxy(ABC):
                 print(f'WARNING! Motor command {motor_pos_range[0]} ({no}) q = {q} > {motor_pos_range[2]}')
 
     def send(self, cmd: lowCmd) -> None:
+        # self.check_motor_ranges(cmd)
         # self.check_motor_ranges(cmd)
         self.monitoring.send_cmd(time.time_ns(), cmd)
         self.send_impl(cmd)
@@ -93,6 +94,7 @@ TARGET_IP = "192.168.123.10"   # target IP address
 LOW_CMD_LENGTH = 610
 LOW_STATE_LENGTH = 771
 
+
 ALIENGO_LOW_WIRED_DEFAULTS = (LOCAL_PORT, TARGET_IP, TARGET_PORT, LOW_CMD_LENGTH, LOW_STATE_LENGTH, -1) 
 
 # to do: move this values to unitree_legged_sdk 
@@ -117,10 +119,15 @@ class RealAlienGo(RobotProxy):
 
     def start(self, level = LOWLEVEL):
         self.cmd = sdk.LowCmd()        
+        self.cmd = sdk.LowCmd()        
         self.conn.InitCmdData(self.cmd)
         self.cmd.levelFlag = level        
 
+    def set_cmd(self, cmd):
+        self.cmd = cmd
+
     def send(self, cmd) -> None:
+        # self.check_motor_ranges(cmd)        
         # self.check_motor_ranges(cmd)        
         # self.monitoring.send_cmd(time.time_ns(), cmd)
 

@@ -43,10 +43,10 @@ def quatToEuler(quat):
 
 def interpolate(src, dst, cycle, total_cycles):
     if cycle >= total_cycles:
-        return dst
+        return dst, True
 
     alpha = cycle / total_cycles
-    return dst * alpha + src * (1 - alpha)
+    return dst * alpha + src * (1 - alpha), False
 
 
 class RunningMeanStd(object):
