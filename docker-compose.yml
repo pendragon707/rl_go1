@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  rlgo1:
+    image: rlgo1
+    build:
+      context: .
+      dockerfile: ./Dockerfile
