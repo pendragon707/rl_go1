@@ -13,7 +13,7 @@ import src.positions as positions
 from src.robots import RealAlienGo, RealGo1
 from src.robots.simulation.simulation import Simulation
 
-def standup(conn : RealAlienGo, viewer = None, aliengo = True):
+def standup(conn : RealAlienGo, viewer = None):
     phase = 0
     phase_cycles = 0
 
@@ -48,7 +48,7 @@ def standup(conn : RealAlienGo, viewer = None, aliengo = True):
         phase_cycles += 1
         time.sleep(0.01)
 
-def standup_2(conn : RealAlienGo, viewer = None, aliengo = True):
+def standup_2(conn : RealAlienGo, viewer = None):
     phase = 0
     phase_cycles = 0
     
