@@ -8,7 +8,8 @@ sys.path.append(os.getcwd())
 
 import src.config as config
 
-from src.robots import RealAlienGo, RealGo1
+# from src.robots import RealAlienGo, RealGo1
+from src.robots import RealGo1
 from src.robots.simulation.simulation import Simulation
 
 
@@ -20,24 +21,20 @@ motor_names = ['FR_0', 'FR_1', 'FR_2',
 def main(args):
     config.ENABLE_SIMULATION = True
 
-
-
-    if not args.real:
-        pass
-        # conn = Simulation(config)
-        # conn.set_keyframe(0)
-        # conn.start()
+    # if not args.real:
+    #     pass
+    #     # conn = Simulation(config)
+    #     # conn.set_keyframe(0)
+    #     # conn.start()
         
-        # viewer = conn.viewer
-    elif args.aliengo:        
-        conn = RealAlienGo()
-        conn.start()
+    #     # viewer = conn.viewer
+    # elif args.aliengo:        
+    #     conn = RealAlienGo()
+    #     conn.start()
 
-        viewer = None
-    else:
-        conn = RealGo1()
-        conn.start()
-        viewer = None    
+    # else:
+    conn = RealGo1()
+    conn.start()  
 
     time.sleep(0.2)
 
