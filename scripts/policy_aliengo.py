@@ -101,7 +101,7 @@ def main(args):
     
     conn.start()
     if not args.standpos:
-        standup(conn, None, args.aliengo)
+        standup(conn, None)
     
     obs = to_observation(conn.wait_latest_state(), act_history)
     obs_history = deque([obs]*50, maxlen=51)

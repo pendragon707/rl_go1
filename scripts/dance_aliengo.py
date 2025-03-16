@@ -16,10 +16,11 @@ import src.positions as positions
 
 from standup_aliengo import standup
 
-from src.robots import RealAlienGo, RealGo1
+# from src.robots import RealAlienGo, RealGo1
+from src.robots import RealGo1
 from src.robots.simulation.simulation import Simulation
 
-def dance_step(conn : RealAlienGo, viewer = None, aliengo = True):
+def dance_step(conn, viewer = None, aliengo = True):
     phase = 0
     phase_cycles = 0
 
@@ -36,6 +37,9 @@ def dance_step(conn : RealAlienGo, viewer = None, aliengo = True):
                 phase_cycles = 0
 
         elif phase == 1:
+            if phase_cycles >= 5000:
+                return state, command  
+    
             if phase_cycles >= 100:
                 print("Go to phase 2")   
 
@@ -48,7 +52,7 @@ def dance_step(conn : RealAlienGo, viewer = None, aliengo = True):
         elif phase == 2:             
             init_q = utils.q_vec(state)
             stand_command = positions.stand_command_2()        
-            q_step, flag = utils.interpolate(init_q, stand_command.q, phase_cycles, num_steps)            
+            q_step, flag = utils.interpolate(init_q, stand_command.q, phase_cycles, 400)            
             command = stand_command.copy(q = q_step)
 
             conn.send(command)            
@@ -65,26 +69,33 @@ def dance_step(conn : RealAlienGo, viewer = None, aliengo = True):
 
         elif phase == 3:                        
             init_q = utils.q_vec(state)
-            laydown_command = positions.laydown_command_2()        
-            q_step, flag = utils.interpolate(init_q, laydown_command.q, phase_cycles, 900)            
+            laydown_command = positions.dance(0)        
+            q_step, flag = utils.interpolate(init_q, laydown_command.q, phase_cycles, 100)            
             command = laydown_command.copy(q = q_step)
             conn.send(command)
 
             if flag:            
-                print("Go to phase 1")
+                print("Go to phase 2")
                 phase_cycles = 0
-                phase = 1
+                phase = 2  
 
-                
+        # elif phase == 4:  
 
-        if phase_cycles == 5000:
-            return state, command       
+        #     init_q = utils.q_vec(state)
+        #     laydown_command = positions.laydown_command_2()        
+        #     q_step, flag = utils.interpolate(init_q, laydown_command.q, phase_cycles, 900)            
+        #     command = laydown_command.copy(q = q_step)
+        #     conn.send(command)
+
+        #     if flag:            
+        #         print("Go to phase 1")
+        #         phase_cycles = 0
+        #         phase = 4
+
+ 
 
         phase_cycles += 1
         time.sleep(0.01)
-
-def dance(conn : RealAlienGo, viewer = None, aliengo = True):
-    pass
 
 def main(args):
     if not args.real:

@@ -10,10 +10,11 @@ import src.config as config
 import src.utils as utils
 import src.positions as positions
 
-from src.robots import RealAlienGo, RealGo1
+# from src.robots import RealAlienGo, RealGo1
+from src.robots import RealGo1
 from src.robots.simulation.simulation import Simulation
 
-def standup(conn : RealAlienGo, viewer = None):
+def standup(conn, viewer = None):
     phase = 0
     phase_cycles = 0
 
@@ -23,11 +24,13 @@ def standup(conn : RealAlienGo, viewer = None):
         
         if phase == 0:
             if phase_cycles >= 100:
+                print("go to 1")
                 phase = 2   
                 phase_cycles = 0
 
         elif phase == 1:
             if phase_cycles >= 100:
+                print("go to 2")
                 phase = 2
                 phase_cycles = 0              
 
@@ -35,7 +38,7 @@ def standup(conn : RealAlienGo, viewer = None):
 
         elif phase == 2:  
             init_q = utils.q_vec(state)
-            stand_command = positions.stand_command_2()            
+            stand_command = positions.stand_command()            
 
             q_step, _ = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
             command = stand_command.copy(q = q_step)
@@ -43,12 +46,13 @@ def standup(conn : RealAlienGo, viewer = None):
             conn.send(command)        
 
             if phase_cycles == 500:
+                print("stop")
                 return state, command       
 
         phase_cycles += 1
         time.sleep(0.01)
 
-def standup_2(conn : RealAlienGo, viewer = None):
+def standup_2(conn, viewer = None):
     phase = 0
     phase_cycles = 0
     
@@ -96,7 +100,7 @@ def main(args):
 
     time.sleep(0.2)
     
-    _, command = standup(conn, viewer, args.aliengo)
+    _, command = standup(conn, viewer)
 
     while viewer is None or viewer.is_running():
         conn.send(command)
