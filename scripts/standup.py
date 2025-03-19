@@ -96,7 +96,7 @@ def main(args):
 
     time.sleep(0.2)
     
-    _, command = standup(conn, viewer, args.aliengo)
+    _, command = standup_2(conn, viewer)
 
     while viewer is None or viewer.is_running():
         conn.send(command)

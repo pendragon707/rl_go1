@@ -56,7 +56,7 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -
     bash /root/miniconda.sh -b -p /root/miniconda3 && \
     rm -f miniconda.sh
 
-RUN echo "export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6" >> ~/.bashrc
+# RUN echo "export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6" >> ~/.bashrc
 
 ENV PATH=/root/miniconda3/bin:$PATH
 COPY ./rl_go.yml .

@@ -16,7 +16,7 @@ from src import config
 from src.robots.simulation import simulation
 from src.command import Command
 
-from standup_aliengo import standup
+from scripts.standup import standup
 
 import src.config as config
 import src.utils as utils
