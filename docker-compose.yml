@@ -5,4 +5,4 @@ services:
     image: rlgo1
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./docker/Dockerfile

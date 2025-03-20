@@ -14,10 +14,7 @@ from src.command import Command
 
 import src.positions as positions
 
-from scripts.standup import standup
-
-# from src.robots import RealAlienGo, RealGo1
-from src.robots import RealGo1
+from src.robots import RealAlienGo, RealGo1
 from src.robots.simulation.simulation import Simulation
 
 def dance_step(conn : RealAlienGo, viewer = None):

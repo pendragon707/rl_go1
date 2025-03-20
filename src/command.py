@@ -6,8 +6,8 @@ from ucl.lowCmd import lowCmd
 from ucl.complex import motorCmd, motorCmdArray
 from ucl.enums import MotorModeLow
 
-sys.path.append('./submodules/unitree_legged_sdk/lib/python/amd64')
-import robot_interface_aliengo as sdk
+# sys.path.append('./submodules/unitree_legged_sdk/lib/python/amd64')
+# import robot_interface_aliengo as sdk
 
 from src import constants
 

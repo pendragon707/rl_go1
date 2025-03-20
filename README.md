@@ -1,5 +1,11 @@
 # rl_go1
 
+xhost +local:
+
+docker build -t rl_go1 -f Dockerfile .
+
+docker run --rm -it --ipc=host --net=host -v .:/workspace --volume=$Home/.Xauthority:/root/.Xauthority:rw -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged rl_go1 bash
+
 После клонирования репозитория устанавливаем следующие зависимости, если не установлены:
 ```
 sudo snap install plotjuggler
