@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /home/rl_go
+cd /home/rl_go1
 git submodule update --init --recursive
 
 source /root/miniconda3/bin/activate
