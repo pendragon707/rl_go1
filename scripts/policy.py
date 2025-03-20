@@ -67,10 +67,10 @@ def push_history(deq, e):
 def main(args):
     device = 'cpu'
 
-    prop_enc_pth = Path(os.getcwd()) / 'models/prop_encoder_1200.pt'
-    mlp_pth = Path(os.getcwd()) / 'models/mlp_1200.pt'
-    mean_file = Path(os.getcwd()) / 'models/mean1200.csv'
-    var_file = Path(os.getcwd()) / 'models/var1200.csv'
+    prop_enc_pth = Path(os.getcwd()) / 'models/model_kv/prop_encoder_1200.pt'
+    mlp_pth = Path(os.getcwd()) / 'models/model_kv/mlp_1200.pt'
+    mean_file = Path(os.getcwd()) / 'models/model_kv/mean1200.csv'
+    var_file = Path(os.getcwd()) / 'models/model_kv/var1200.csv'
 
     prop_loaded_encoder = torch.jit.load(prop_enc_pth).to(device)
     loaded_mlp = torch.jit.load(mlp_pth).to(device)
@@ -81,6 +81,8 @@ def main(args):
     action_mean = np.array([0.05,  0.8, -1.4, -0.05,  0.8, -1.4, 0.05,  0.8, -1.4,-0.05,  0.8, -1.4], dtype=np.float32)
     Kp = 35
     Kd = 0.6
+    # Kp = 90
+    # Kd = 1
     act_history = deque([np.zeros((1, 12)) for _ in range(4)], maxlen=4)
     
     calc_latent_every_steps = 2
@@ -101,7 +103,7 @@ def main(args):
     
     conn.start()
     if not args.standpos:
-        standup(conn, None, args.aliengo)
+        standup(conn, None)
     
     obs = to_observation(conn.wait_latest_state(), act_history)
     obs_history = deque([obs]*50, maxlen=51)

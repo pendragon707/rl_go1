@@ -42,10 +42,18 @@ def quatToEuler(quat):
 
 
 def interpolate(src, dst, cycle, total_cycles):
-    if cycle >= total_cycles:
+    if cycle >= total_cycles - 1:
         return dst, True
 
-    alpha = cycle / total_cycles
+    alpha = cycle / total_cycles  
+
+    if cycle == 0:
+        print(src)
+        print(dst)
+        print(cycle)
+        print(alpha)
+        print( dst * alpha + src * (1 - alpha) )
+       
     return dst * alpha + src * (1 - alpha), False
 
 

@@ -19,7 +19,7 @@ from scripts.standup import standup
 from src.robots import RealAlienGo, RealGo1
 from src.robots.simulation.simulation import Simulation
 
-def dance_step(conn : RealAlienGo, viewer = None):
+def dance_1(conn : RealAlienGo, viewer = None):
     phase = 0
     phase_cycles = 0
     num_steps = 500
@@ -39,62 +39,53 @@ def dance_step(conn : RealAlienGo, viewer = None):
 
                 phase = 2
                 phase_cycles = 0
-                num_steps = 500                
+                num_steps = 500    
+
+                init_q = utils.q_vec(state)            
 
             conn.send(positions.laydown_command())
 
         elif phase == 2:             
-            init_q = utils.q_vec(state)
+            # init_q = utils.q_vec(state)
             stand_command = positions.stand_command_2()        
             q_step, flag = utils.interpolate(init_q, stand_command.q, phase_cycles, num_steps)            
             command = stand_command.copy(q = q_step)
 
-            conn.send(command)            
+            conn.send(command)     
+            # conn.send(stand_command)            
 
             if flag:
                 print("Go to phase 3")
                 phase_cycles = 0
                 phase = 3
 
-        elif phase == 3:                        
-            init_q = utils.q_vec(state)
-            dance_command = Command(
-                # q = [0.05,  0.8, -1.5, -0.05,  0.8, -1.5, 0.05,  0.8, -1.5, -0.05,  0.8, -1.5], 
-                q = [0.05,  0.8, -1.7, -0.05,  0.8, -1.7, 0.05,  0.8, -1.4, -0.05,  0.8, -1.4], 
+                init_q = utils.q_vec(state)
+
+        elif phase == 3:                                    
+            dance_command = Command(                 
+                # q = [0.05,  0.8, -1.8, -0.05,  0.8, -1.8, 0.05,  0.8, -1.4, -0.05,  0.8, -1.4],
+                q = [0.05,  0.8, -1.6, -0.05,  0.8, -1.4, 0.05,  0.8, -1.4, -0.05,  0.8, -1.4],                 
                 Kp = [90]*12,
                 Kd = [1]*12
             )
             
-            q_step, flag = utils.interpolate(init_q, dance_command.q, phase_cycles, 200)                          
+            q_step, flag = utils.interpolate(init_q, dance_command.q, phase_cycles, 100)                          
 
             command = dance_command.copy(q = q_step)
             conn.send(command)
 
-            if flag:            
+            if flag:                         
                 print("Go to phase 4")
-                phase_cycles = 0
-                # num_steps = 200
-                phase = 4              
+                phase_cycles = 0                
+                phase = 4   
+
+                init_q = utils.q_vec(state)
 
         elif phase == 4:                        
             init_q = utils.q_vec(state)
-            stand_command = positions.stand_command_2()        
-            q_step, flag = utils.interpolate(init_q, stand_command.q, phase_cycles, 100)            
-            command = stand_command.copy(q = q_step)
-
-            conn.send(command) 
-
-            if flag:            
-                print("Go to phase 5")
-                phase_cycles = 0
-                phase = 5          
-
-                # return state, command 
-
-        elif phase == 5:                        
-            init_q = utils.q_vec(state)
             dance_command = Command(
-                q = [0.05,  0.8, -1.4, -0.05,  0.8, -1.4, 0.05,  0.8, -1.7, -0.05,  0.8, -1.7], 
+                # q = [0.05,  0.8, -1.4, -0.05,  0.8, -1.4, 0.05,  0.8, -1.7, -0.05,  0.8, -1.7], 
+                q = [0.05,  0.8, -1.4, -0.05,  0.8, -1.6, 0.05,  0.8, -1.4, -0.05,  0.8, -1.4],
                 Kp = [90]*12,
                 Kd = [1]*12
             )
@@ -103,16 +94,18 @@ def dance_step(conn : RealAlienGo, viewer = None):
             conn.send(command)
 
             if flag:            
-                print("Go to phase 2")
+                print("Go to phase 3")
                 phase_cycles = 0
-                phase = 2       
+                phase = 3   
 
-                # return state, command 
+                init_q = utils.q_vec(state)    
 
         phase_cycles += 1
         time.sleep(0.01)
 
-def dance(conn : RealAlienGo, viewer = None, aliengo = True):
+    return state
+
+def dance_2(conn : RealAlienGo, viewer = None):
     pass
 
 def main(args):
@@ -134,7 +127,7 @@ def main(args):
 
     time.sleep(0.2)
 
-    _, command = dance_step(conn, viewer)
+    _, command = dance_1(conn, viewer)
 
     # # несколько приседаний up-and-down (с разной скоростью)?
     # standup(conn, None, args.aliengo)

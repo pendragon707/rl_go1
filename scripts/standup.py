@@ -10,43 +10,47 @@ import src.config as config
 import src.utils as utils
 import src.positions as positions
 
+# from src.plots import csv_fill 
+
 from src.robots import RealAlienGo, RealGo1
 from src.robots.simulation.simulation import Simulation
 
 def standup(conn : RealAlienGo, viewer = None):
     phase = 0
     phase_cycles = 0
-
     
     while viewer is None or viewer.is_running():
         state = conn.wait_latest_state()
         
         if phase == 0:
             if phase_cycles >= 100:
-                phase = 2   
+                phase = 1   
                 phase_cycles = 0
 
         elif phase == 1:
             if phase_cycles >= 100:
                 phase = 2
-                phase_cycles = 0              
+                phase_cycles = 0 
+                init_q = utils.q_vec(state)             
 
             conn.send(positions.laydown_command())
 
         elif phase == 2:  
-            init_q = utils.q_vec(state)
+            # init_q = utils.q_vec(state)
             stand_command = positions.stand_command_2()            
 
-            q_step, _ = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
+            q_step, flag = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
             command = stand_command.copy(q = q_step)
 
             conn.send(command)        
 
-            if phase_cycles == 500:
-                return state, command       
+            if flag:            
+                return state, command   
 
         phase_cycles += 1
         time.sleep(0.01)
+
+    return state
 
 def standup_2(conn : RealAlienGo, viewer = None):
     phase = 0
@@ -57,23 +61,25 @@ def standup_2(conn : RealAlienGo, viewer = None):
         
         if phase == 0:
             if phase_cycles >= 100:
-                phase = 2   
+                phase = 1  
                 phase_cycles = 0
 
-        elif phase == 2:  
+        elif phase == 1:  
             init_q = utils.q_vec(state)            
-            stand_command = positions.stand_command_3()
+            stand_command = positions.stand_command_2()
 
-            q_step, _ = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
+            q_step, flag = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
             command = stand_command.copy(q = q_step)
 
             conn.send(command)        
 
-            if phase_cycles == 500:
+            if flag:            
                 return state, command       
 
         phase_cycles += 1
         time.sleep(0.01)
+
+    return state
 
 def main(args):
     config.ENABLE_SIMULATION = True
@@ -96,7 +102,7 @@ def main(args):
 
     time.sleep(0.2)
     
-    _, command = standup_2(conn, viewer)
+    _, command = standup(conn, viewer)
 
     while viewer is None or viewer.is_running():
         conn.send(command)

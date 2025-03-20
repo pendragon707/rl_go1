@@ -42,12 +42,12 @@ def dance_step(conn : RealAlienGo, viewer = None):
 
                 phase = 2
                 phase_cycles = 0
+
                 init_q = utils.q_vec(state)
 
             conn.send(positions.laydown_command())
 
         elif phase == 2:             
-            init_q = utils.q_vec(state)
             stand_command = positions.stand_command_2()        
             q_step, flag = utils.interpolate(init_q, stand_command.q, phase_cycles, num_steps)            
             command = stand_command.copy(q = q_step)
@@ -59,23 +59,27 @@ def dance_step(conn : RealAlienGo, viewer = None):
                 phase_cycles = 0
                 phase = 3
 
-        elif phase == 3:                        
-            init_q = utils.q_vec(state)
+                init_q = utils.q_vec(state)
+
+        elif phase == 3:                                    
             dance_command = positions.sit()      
             q_step, flag = utils.interpolate(init_q, dance_command.q, phase_cycles, 800)            
             command = dance_command.copy(q = q_step)
+
             conn.send(command)
 
             if flag:            
                 print("Go to phase 4")
                 phase_cycles = 0
-                phase = 4                
+                phase = 4      
+
+                init_q = utils.q_vec(state)          
 
         elif phase == 4:                        
-            init_q = utils.q_vec(state)
             laydown_command = positions.paw()       
-            q_step, flag = utils.interpolate(init_q, laydown_command.q, phase_cycles, 900)            
+            q_step, flag = utils.interpolate(init_q, laydown_command.q, phase_cycles, 200)            
             command = laydown_command.copy(q = q_step)
+
             conn.send(command)
 
             if flag:            
@@ -87,6 +91,8 @@ def dance_step(conn : RealAlienGo, viewer = None):
 
         phase_cycles += 1
         time.sleep(0.01)
+
+    return state
 
 def dance(conn : RealAlienGo, viewer = None, aliengo = True):
     pass
