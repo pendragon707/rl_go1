@@ -51,7 +51,7 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -
     bash /root/miniconda.sh -b -p /root/miniconda3 && \
     rm -f miniconda.sh
 
-RUN echo "export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6" >> ~/.bashrc
+# RUN echo "export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6" >> ~/.bashrc
 
 WORKDIR /home
 
@@ -60,10 +60,8 @@ COPY rl_go.yml .
 RUN conda env create -n rl_go --file /home/rl_go.yml
 
 COPY build.sh .
-                
-# RUN conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
-
-# COPY .. .
+COPY entry.sh .
+COPY .. .
 
 RUN ["chmod", "+x", "/home/build.sh"]
 CMD ["/home/build.sh"]

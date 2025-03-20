@@ -1,6 +1,3 @@
-[submodule "submodules/raisimLib"]
-	path = submodules/raisimLib
-	url = https://github.com/kamvlad/raisimLib.git
 [submodule "submodules/rl_locomotion_go1"]
 	path = submodules/rl_locomotion_go1
 	url = https://github.com/kamvlad/rl_locomotion_go1.git
