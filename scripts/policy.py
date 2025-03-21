@@ -79,7 +79,9 @@ def main(args):
     clip_obs = 10
 
     action_mean = np.array([0.05,  0.8, -1.4, -0.05,  0.8, -1.4, 0.05,  0.8, -1.4,-0.05,  0.8, -1.4], dtype=np.float32)
-    Kp = 35
+    # Kp = 35
+    # Kd = 0.6
+    Kp = 60
     Kd = 0.6
     # Kp = 90
     # Kd = 1
@@ -92,18 +94,24 @@ def main(args):
 
     if args.real and args.aliengo:        
         conn = RealAlienGo()
-    if args.real:        
+        conn.start()   
+
+    elif args.real:        
         conn = RealGo1()
+        conn.start()   
+
     else:
         conn = simulation.Simulation(config) 
         if args.standpos:
             conn.set_keyframe(3)
         else:
-            conn.set_keyframe(0)
-    
-    conn.start()
+            conn.set_keyframe(0)    
+        conn.start()
+
     if not args.standpos:
         standup(conn, None)
+
+    print("stand")
     
     obs = to_observation(conn.wait_latest_state(), act_history)
     obs_history = deque([obs]*50, maxlen=51)

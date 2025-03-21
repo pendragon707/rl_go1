@@ -32,9 +32,6 @@ def dance_step(conn : RealAlienGo, viewer = None):
                 phase_cycles = 0
 
         elif phase == 1:
-            if phase_cycles >= 5000:
-                return state, command   
-    
             if phase_cycles >= 100:
                 print("Go to phase 2")   
 
@@ -66,26 +63,8 @@ def dance_step(conn : RealAlienGo, viewer = None):
 
             conn.send(command)
 
-            if flag:            
-                print("Go to phase 4")
-                phase_cycles = 0
-                phase = 4      
-
-                init_q = utils.q_vec(state)          
-
-        elif phase == 4:                        
-            laydown_command = positions.paw()       
-            q_step, flag = utils.interpolate(init_q, laydown_command.q, phase_cycles, 200)            
-            command = laydown_command.copy(q = q_step)
-
-            conn.send(command)
-
-            if flag:            
-                # print("Go to phase 1")
-                # phase_cycles = 0
-                # phase = 1
-
-                return state, command 
+            if flag:          
+                return state, command   
 
         phase_cycles += 1
         time.sleep(0.01)

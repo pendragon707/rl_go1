@@ -93,7 +93,7 @@ def main(args):
         viewer = conn.viewer
     elif args.aliengo:        
         conn = RealAlienGo()
-        conn.start()        
+        conn.start()             
 
         viewer = None
     else:
