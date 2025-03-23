@@ -6,7 +6,6 @@ docker run --rm -it --ipc=host -p 8082:8082 --net=host -v .:/workspace --volume=
 Внутри докера в директории `/home` запускаем:
 ```
 ./build.sh
-conda activate rl_go
 ```
 
 Запускаем саму политику:
