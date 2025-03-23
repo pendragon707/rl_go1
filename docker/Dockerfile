@@ -53,9 +53,7 @@ COPY docker/rl_go.yml .
 RUN conda env create -n rl_go --file /home/rl_go.yml
 
 COPY docker/build.sh .
-COPY docker/entry.sh .
 COPY . rl_go1
 
-RUN ["chmod", "+x", "/home/entry.sh"]
 RUN ["chmod", "+x", "/home/build.sh"]
 CMD ["/home/build.sh"]
