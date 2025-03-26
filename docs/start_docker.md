@@ -1,7 +1,7 @@
 Локально:
 ```
 xhost +local:
-docker run --rm -it --ipc=host -p 8082:8082 --net=host -v .:/workspace --volume=$Home/.Xauthority:/root/.Xauthority:rw -e DISPLAY=:1.0 -v /tmp/.X11-unix:/tmp/.X11-unix --privileged nonpenguin/rlgo1 bash
+docker run --rm -it -p 8082:8082 --ipc=host --net=host -v .:/workspace --volume=$HOME/.Xauthority:/root/.Xauthority:rw -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged nonpenguin/rlgo1 bash
 ```
 Внутри докера в директории `/home` запускаем:
 ```

@@ -10,8 +10,6 @@ import src.config as config
 import src.utils as utils
 import src.positions as positions
 
-# from src.plots import csv_fill 
-
 from src.robots import RealAlienGo, RealGo1
 from src.robots.simulation.simulation import Simulation
 
@@ -36,8 +34,7 @@ def standup(conn, viewer = None):
 
             conn.send(positions.laydown_command())
 
-        elif phase == 2:  
-            # init_q = utils.q_vec(state)
+        elif phase == 2:              
             stand_command = positions.stand_command_2()            
 
             q_step, flag = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            

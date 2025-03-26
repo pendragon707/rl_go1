@@ -8,12 +8,14 @@ RUN apt-get update &&  apt-get install -y --no-install-recommends \
     software-properties-common \
     wget \
     unzip \    
+    iputils-ping \
+    vim \ 
     python3-dev \
     python3-setuptools \
     &&  rm -rf /var/lib/apt/lists/*
 
 # Install Glib and Cmake
-RUN  apt update && apt install -y \
+RUN apt update && apt install -y \
     build-essential \
     g++ \
     libglib2.0-dev \
@@ -56,4 +58,4 @@ COPY docker/build.sh .
 COPY . rl_go1
 
 RUN ["chmod", "+x", "/home/build.sh"]
-CMD ["/home/build.sh"]
+ENTRYPOINT ["/home/build.sh"]
