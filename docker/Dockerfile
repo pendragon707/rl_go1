@@ -14,12 +14,26 @@ RUN apt-get update &&  apt-get install -y --no-install-recommends \
     python3-setuptools \
     &&  rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y \
+    cmake \
+    libxkbcommon0 \
+    libxcb-icccm4 \
+    libxcb-image0 \
+    libxcb-keysyms1 \
+    libxcb-render-util0 \
+    libxcb-xinerama0 \
+    libxcb-xkb1 \
+    libxkbcommon-x11-0 \
+    libgbm1 \
+    mesa-utils \
+    &&  rm -rf /var/lib/apt/lists/*
+
 # Install Glib and Cmake
 RUN apt update && apt install -y \
     build-essential \
     g++ \
     libglib2.0-dev \
-    cmake \
+    # cmake \
     libboost-all-dev \
     libmsgpack* \
     &&  rm -rf /var/lib/apt/lists/*
@@ -58,4 +72,4 @@ COPY docker/build.sh .
 COPY . rl_go1
 
 RUN ["chmod", "+x", "/home/build.sh"]
-ENTRYPOINT ["/home/build.sh"]
+RUN "/home/build.sh"
