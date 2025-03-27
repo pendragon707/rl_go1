@@ -46,13 +46,6 @@ def interpolate(src, dst, cycle, total_cycles):
         return dst, True
 
     alpha = cycle / total_cycles  
-
-    if cycle == 0:
-        print(src)
-        print(dst)
-        print(cycle)
-        print(alpha)
-        print( dst * alpha + src * (1 - alpha) )
        
     return dst * alpha + src * (1 - alpha), False
 
