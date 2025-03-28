@@ -1,19 +1,14 @@
 import sys
 import time
-# sys.path.append('../../submodules/unitree_legged_sdk/lib/python/amd64')
+
 sys.path.append('./submodules/unitree_legged_sdk/lib/python/amd64')
 import robot_interface_aliengo as sdk
 
 from src.robots.aliengo import ALIENGO_LOW_WIRED_DEFAULTS, LOWLEVEL, motors_aliengo_pos_range
 
-import sys
-sys.path.append("./src/robots")
-from src.robots.abstract_proxy import RobotProxy
-
 class RealAlienGo():
-# class RealAlienGo(RobotProxy):
 
-    def __init__(self, settings=ALIENGO_LOW_WIRED_DEFAULTS, safe = True):
+    def __init__(self, settings=ALIENGO_LOW_WIRED_DEFAULTS):
         self.udp = sdk.UDP(*settings)
         
     def start(self):        
@@ -60,10 +55,4 @@ class RealAlienGo():
             time.sleep(0.001)
             state = self.get_latest_state()
         return state
-    
-    # def get_states_impl(self):
-    #     state = sdk.LowState()
-    #     self.udp.Recv()
-    #     self.udp.GetRecv(state)
-    #     return state
         

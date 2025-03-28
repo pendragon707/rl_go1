@@ -6,11 +6,8 @@ import sys
 print(os.getcwd())
 sys.path.append(os.getcwd())
 
-import src.config as config
-
-# from src.robots import RealAlienGo, RealGo1
-from src.robots import RealGo1
-from src.robots.simulation.simulation import Simulation
+from src.robots import RealAlienGo, RealGo1
+from src.robots.simulation import Simulation, config
 
 
 motor_names = ['FR_0', 'FR_1', 'FR_2',

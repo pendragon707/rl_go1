@@ -8,14 +8,10 @@ print(os.getcwd())
 sys.path.append(os.getcwd())
 
 from src import utils
-from src import config
-from src.robots.simulation import simulation
-from src.command import Command
-
 import src.positions as positions
 
 from src.robots import RealAlienGo, RealGo1
-from src.robots.simulation.simulation import Simulation
+from src.robots.simulation import Simulation, config
 
 def dance_step(conn : RealAlienGo, viewer = None):
     phase = 0
@@ -71,9 +67,6 @@ def dance_step(conn : RealAlienGo, viewer = None):
 
     return state
 
-def dance(conn : RealAlienGo, viewer = None, aliengo = True):
-    pass
-
 def main(args):
     if not args.real:
         conn = Simulation(config)
@@ -94,10 +87,6 @@ def main(args):
     time.sleep(0.2)
 
     _, command = dance_step(conn, viewer)
-
-    # # несколько приседаний up-and-down (с разной скоростью)?
-    # standup(conn, None, args.aliengo)
-
 
     while viewer is None or viewer.is_running():
         conn.send(command)
