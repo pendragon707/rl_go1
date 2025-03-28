@@ -11,19 +11,12 @@ import torch
 import numpy as np
 from collections import deque
 
-from src import utils
-from src import config
-from src.robots.simulation import simulation
-from src.command import Command
-
 from scripts.standup import standup
 
-import src.config as config
 import src.utils as utils
-import src.positions as positions
-
+from src.command import Command
 from src.robots import RealAlienGo, RealGo1
-from src.robots.simulation.simulation import Simulation
+from src.robots.simulation import Simulation, config
 
 sys.path.append("./submodules/free-dog-sdk/")
 from ucl.lowCmd import lowCmd
@@ -105,7 +98,7 @@ def main(args):
         conn.start()   
 
     else:
-        conn = simulation.Simulation(config) 
+        conn = Simulation(config) 
         if args.standpos:
             conn.set_keyframe(3)
         else:
