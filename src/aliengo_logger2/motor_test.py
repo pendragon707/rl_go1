@@ -28,10 +28,7 @@ if __name__ == '__main__':
                 position[i] = random.randint(-4, 4)
             for i in range(len(torque)):
                 torque[i] = random.randint(-14, 14)
-
-        # torque = [#0-2FR 3-5FL 6-8RR 9-11RL] # 12d vector
-        # position = 9#0-2FR 3-5FL 6-8RR 9-11RL] # 12d vector
+    
         csv_fill(torque, position)
-        
         print('\n==time', motiontime*50)
             
