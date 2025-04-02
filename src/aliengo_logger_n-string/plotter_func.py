@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from itertools import count
+from matplotlib.animation import FuncAnimation
+
 
 import subprocess # for read file tail
 import io
@@ -37,9 +39,17 @@ def read_last_n_lines_with_tail(filename, n=0, delimiter=','):
             print(f"Error with executing tail: {error.decode()}")
             return pd.DataFrame()  # empty DataFrame
 
-        #read n-string tail file
-        data = pd.read_csv(io.StringIO(output.decode()), delimiter=delimiter)
-        return data
+        try: # read n-string tail file, need for correct work with header when we read part of table
+            header = pd.read_csv(filename, delimiter=delimiter, nrows=0)  # read only header row
+            data = pd.read_csv(io.StringIO(output.decode()), delimiter=delimiter, header=None, names=header.columns) # don't treat first line as header
+
+            #data = pd.read_csv(io.StringIO(output.decode()), delimiter=delimiter)
+            return data
+
+        except pd.errors.EmptyDataError:
+            print("Tail output is empty.")
+            return pd.DataFrame()
+    
     except FileNotFoundError:
         print(f"Not found file: {filename}")
         return pd.DataFrame()
@@ -58,9 +68,19 @@ def build_graph_from_csv(csvfilename = 'motorstate.csv', time_window = 0, mode =
     fig, (ax0, ax1, ax2) = plt.subplots(nrows = 3, ncols= 2, sharex = True) #subplot init
 
     def animate(i):
-        data - read_last_n_lines_with_tail('motorstate.csv') # read only n strings (time window)
+
+        ax0[0].cla() #clear axis
+        ax0[1].cla()
+        ax1[0].cla()
+        ax1[1].cla()
+        ax2[0].cla()
+        ax2[1].cla()
+
+        data = read_last_n_lines_with_tail('motorstate.csv', 400) # read only n strings (time window)
         #data = pd.read_csv('motorstate.csv') # read full file always
-        x = data['x_value']
+
+        x = data['tick']
+        #x = data['x_value']
 
         torque_data = {
             "FR": [data['FR0_torque'].tolist(), data['FR1_torque'].tolist(), data['FR2_torque'].tolist()],
@@ -114,13 +134,21 @@ def build_graph_from_csv(csvfilename = 'motorstate.csv', time_window = 0, mode =
         ax1[0].grid(True)
         ax2[0].grid(True)
 
-        ax0[0].set_title('Hip motor')
+        ax0[0].set_title('Hip motor torque') #left graphs
         ax1[0].set_title('Arm motor')
         ax2[0].set_title('Knee motor')
 
+        ax0[1].grid(True)
+        ax1[1].grid(True)
+        ax2[1].grid(True)
+
+        ax0[1].set_title('Hip motor position') #right graphs
+        ax1[1].set_title('Arm motor')
+        ax2[1].set_title('Knee motor')
+
         #ax1.legend(loc='upper left')    
 
-    ani = FuncAnimation(fig, animate, interval=1000)
+    ani = FuncAnimation(fig, animate, interval=100) #1000
 
     plt.tight_layout()
     plt.show()

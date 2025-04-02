@@ -9,7 +9,7 @@ fieldnames = ["x_value",
             "FL1_pos", "FR1_pos", "RL1_pos", "RR1_pos", 
             "FL2_pos", "FR2_pos", "RL2_pos", "RR2_pos"]
 
-with open('motorstate.csv', 'w') as csv_file:
+with open('motorstate.csv', 'w') as csv_file: #create new file when import
     csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
     csv_writer.writeheader()
 
