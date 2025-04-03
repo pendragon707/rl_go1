@@ -4,6 +4,11 @@ submodules/raisimLib
 scripts/sit.py
 scripts/dance.py
 scripts/get_states.py
+
+submodules/unitree_legged_sdk/aliengo/up_and_down.py
+submodules/unitree_legged_sdk/aliengo/feet.cpp
+submodules/unitree_legged_sdk/aliengo/example_print_motors.py
+submodules/unitree_legged_sdk/aliengo/example_up.py
 **/__pycache__
 **/.venv
 **/.classpath
