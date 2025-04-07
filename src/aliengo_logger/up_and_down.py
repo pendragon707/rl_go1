@@ -4,6 +4,8 @@ import sys
 import time
 import math
 
+from motordata_csv_writer import append_motor_state_to_csv
+
 sys.path.append('../lib/python/amd64')
 import robot_interface_aliengo as sdk
 
@@ -129,7 +131,15 @@ if __name__ == '__main__':
                 print("Torque :   ", end = "")
                 for num, value in enumerate(d.values()):
                     print(int(state.motorState[ value ].tauEst * 100), end = " ")
-                                    
+# ===== logger
+        tick = state.tick
+        torque_vector_real = [state.motorState[i].tauEst for i in range(12)]
+        position_vector_real = [state.motorState[i].q for i in range(12)]
+
+        if motiontime % 10 == 0: # > ~0.02
+            append_motor_state_to_csv(tick, torque_vector_real, position_vector_real)
+# ===== logger     
+               
         if(motiontime > 10):
              safe.PowerProtect(cmd, state, 1)
 

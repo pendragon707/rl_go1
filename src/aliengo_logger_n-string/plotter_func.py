@@ -69,17 +69,20 @@ def build_graph_from_csv(csvfilename = 'motorstate.csv', time_window = 0, mode =
 
     def animate(i):
 
-        ax0[0].cla() #clear axis
+        ax0[0].cla() #clear all axis
         ax0[1].cla()
         ax1[0].cla()
         ax1[1].cla()
         ax2[0].cla()
         ax2[1].cla()
 
-        data = read_last_n_lines_with_tail('motorstate.csv', 400) # read only n strings (time window)
+        data = read_last_n_lines_with_tail('motorstate.csv', 700) # read only n strings (time window)
         #data = pd.read_csv('motorstate.csv') # read full file always
+ 
+        data['relative_time'] = (data['tick'] - data['tick'].iloc[-1]) / 1000.0 #from absolute tick to relative time
+        x = data['relative_time']
 
-        x = data['tick']
+        #x = data['tick']
         #x = data['x_value']
 
         torque_data = {
@@ -96,35 +99,35 @@ def build_graph_from_csv(csvfilename = 'motorstate.csv', time_window = 0, mode =
             "RL": [data['RL0_pos'].tolist(), data['RL1_pos'].tolist(), data['RL2_pos'].tolist()],
         }
 
-    # TORQUE (COL 1)
-        ax0[0].plot(x, torque_data['FL'][0], c = 'red', label = 'FL')
-        ax0[0].plot(x, torque_data['FR'][0], c = 'green', label = 'FR')
+    # TORQUE (COL 0)
+        ax0[0].plot(x, torque_data['FL'][0], c = 'orange', label = 'FL')
+        ax0[0].plot(x, torque_data['FR'][0], c = 'red', label = 'FR')
         ax0[0].plot(x, torque_data['RL'][0], c = 'blue', label = 'RL')
         ax0[0].plot(x, torque_data['RR'][0], c = 'black', label = 'RR')
 
-        ax1[0].plot(x, torque_data['FL'][1], c = 'red', label = 'FL')
-        ax1[0].plot(x, torque_data['FR'][1], c = 'green', label = 'FR')
+        ax1[0].plot(x, torque_data['FL'][1], c = 'orange', label = 'FL')
+        ax1[0].plot(x, torque_data['FR'][1], c = 'red', label = 'FR')
         ax1[0].plot(x, torque_data['RL'][1], c = 'blue', label = 'RL')
         ax1[0].plot(x, torque_data['RR'][1], c = 'black', label = 'RR')
 
-        ax2[0].plot(x, torque_data['FL'][2], c = 'red', label = 'FL')
-        ax2[0].plot(x, torque_data['FR'][2], c = 'green', label = 'FR')
+        ax2[0].plot(x, torque_data['FL'][2], c = 'orange', label = 'FL')
+        ax2[0].plot(x, torque_data['FR'][2], c = 'red', label = 'FR')
         ax2[0].plot(x, torque_data['RL'][2], c = 'blue', label = 'RL')
         ax2[0].plot(x, torque_data['RR'][2], c = 'black', label = 'RR')
 
     # POSITION (COL 1)
-        ax0[1].plot(x, position_data['FL'][0], c = 'red', label = 'FL')
-        ax0[1].plot(x, position_data['FR'][0], c = 'green', label = 'FR')
+        ax0[1].plot(x, position_data['FL'][0], c = 'orange', label = 'FL')
+        ax0[1].plot(x, position_data['FR'][0], c = 'red', label = 'FR')
         ax0[1].plot(x, position_data['RL'][0], c = 'blue', label = 'RL')
         ax0[1].plot(x, position_data['RR'][0], c = 'black', label = 'RR')
 
-        ax1[1].plot(x, position_data['FL'][1], c = 'red', label = 'FL')
-        ax1[1].plot(x, position_data['FR'][1], c = 'green', label = 'FR')
+        ax1[1].plot(x, position_data['FL'][1], c = 'orange', label = 'FL')
+        ax1[1].plot(x, position_data['FR'][1], c = 'red', label = 'FR')
         ax1[1].plot(x, position_data['RL'][1], c = 'blue', label = 'RL')
         ax1[1].plot(x, position_data['RR'][1], c = 'black', label = 'RR')
 
-        ax2[1].plot(x, position_data['FL'][2], c = 'red', label = 'FL')
-        ax2[1].plot(x, position_data['FR'][2], c = 'green', label = 'FR')
+        ax2[1].plot(x, position_data['FL'][2], c = 'orange', label = 'FL')
+        ax2[1].plot(x, position_data['FR'][2], c = 'red', label = 'FR')
         ax2[1].plot(x, position_data['RL'][2], c = 'blue', label = 'RL')
         ax2[1].plot(x, position_data['RR'][2], c = 'black', label = 'RR')
         
@@ -146,9 +149,12 @@ def build_graph_from_csv(csvfilename = 'motorstate.csv', time_window = 0, mode =
         ax1[1].set_title('Arm motor')
         ax2[1].set_title('Knee motor')
 
-        #ax1.legend(loc='upper left')    
+        # legend with motor definition
+        ax0[0].legend(loc='upper left')    
 
-    ani = FuncAnimation(fig, animate, interval=100) #1000
+    interval = 500 # mils, plot update period
+    MAX_FRAMES = (60 * 1000 // interval) * 5 # = 5 min of plotting with cache
+    ani = FuncAnimation(fig, animate, interval=interval, save_count=MAX_FRAMES) # save_count for cache limit
 
     plt.tight_layout()
     plt.show()
