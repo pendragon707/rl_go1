@@ -4,7 +4,8 @@ import sys
 import time
 import math
 
-from motordata_csv_writer import append_motor_state_to_csv
+#from motor_data_csv_writer import csv_fill # fill motorstate.csv
+#from plotter_func import build_graph_from_csv
 
 sys.path.append('../lib/python/amd64')
 import robot_interface_aliengo as sdk
@@ -42,6 +43,8 @@ def setup_feet(cmd, lists_motors):
 
 if __name__ == '__main__':
 
+    from motor_data_csv_writer import csv_fill # fill motorstate.csv
+
     d = {'FR_0':0, 'FR_1':1, 'FR_2':2,
          'FL_0':3, 'FL_1':4, 'FL_2':5, 
          'RR_0':6, 'RR_1':7, 'RR_2':8, 
@@ -53,7 +56,7 @@ if __name__ == '__main__':
     HIGHLEVEL = 0x00
     LOWLEVEL  = 0xff
     start_q = [-0.15, 1.18, -2.8] * 4
-    end_q = [0.0, 0.3, -1, 0.0, 1, -1]
+    end_q = [0.0, 0.3, -1.5, 0.0, 1, -1.5] #[0.0, 0.3, -1, 0.0, 1, -1]
     dt = 0.002
     qInit = [0] * 12
     qDes = [0] * 12
@@ -75,6 +78,7 @@ if __name__ == '__main__':
     count2 = 0
     Tpi = 0
     motiontime = 0
+
     while True:
         time.sleep(0.002)
         motiontime += 1
@@ -101,7 +105,7 @@ if __name__ == '__main__':
                 for num, value in enumerate(d.values()):
                     qDes[num] = jointLinearInterpolation(qInit[num], start_q[num], rate)
                                                         
-            if( motiontime >= 400):                    
+            if(motiontime >= 400):                    
                 alpha = min(count /  1000, 1)
                 alpha2 = min(count2 / 1000, 1)
                 if motiontime <= 2500:
@@ -131,15 +135,15 @@ if __name__ == '__main__':
                 print("Torque :   ", end = "")
                 for num, value in enumerate(d.values()):
                     print(int(state.motorState[ value ].tauEst * 100), end = " ")
-# ===== logger
+        # logger
         tick = state.tick
         torque_vector_real = [state.motorState[i].tauEst for i in range(12)]
         position_vector_real = [state.motorState[i].q for i in range(12)]
 
-        if motiontime % 10 == 0: # > ~0.02
-            append_motor_state_to_csv(tick, torque_vector_real, position_vector_real)
-# ===== logger     
-               
+        if motiontime % 10 == 0: #0.02
+            csv_fill(tick, torque_vector_real, position_vector_real)
+
+                                    
         if(motiontime > 10):
              safe.PowerProtect(cmd, state, 1)
 

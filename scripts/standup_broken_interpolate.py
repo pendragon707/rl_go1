@@ -34,15 +34,16 @@ def standup(conn, viewer = None):
             conn.send(positions.laydown_command())
 
         elif phase == 2:              
-            stand_command = positions.stand_command_2()            
+            # stand_command = positions.stand_command_2()            
 
-            q_step, flag = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
-            command = stand_command.copy(q = q_step)
+            # q_step, flag = utils.interpolate(init_q, stand_command.q, phase_cycles, 500)            
+            # command = stand_command.copy(q = q_step)
+            command = positions.stand_command_2()            
 
             conn.send(command)        
 
-            if flag:            
-                return state, command   
+            # if flag:            
+            return state, command   
 
         phase_cycles += 1
         time.sleep(0.01)
