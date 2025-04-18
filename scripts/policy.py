@@ -13,6 +13,8 @@ from collections import deque
 
 from scripts.standup import standup
 
+from motor_data_csv_writer import csv_fill
+
 import src.utils as utils
 from src.command import Command
 from src.robots import RealAlienGo, RealGo1
@@ -70,6 +72,11 @@ def main(args):
     mean_file = Path(os.getcwd()) / 'models/model_05_03/mean1200.csv'
     var_file = Path(os.getcwd()) / 'models/model_05_03/var1200.csv'
 
+    # prop_enc_pth = Path(os.getcwd()) / 'models/model_12k+basep/prop_encoder_1200.pt'
+    # mlp_pth = Path(os.getcwd()) / 'models/model_12k+basep/mlp_1200.pt'
+    # mean_file = Path(os.getcwd()) / 'models/model_12k+basep/mean1200.csv'
+    # var_file = Path(os.getcwd()) / 'models/model_12k+basep/var1200.csv'
+
     prop_loaded_encoder = torch.jit.load(prop_enc_pth).to(device)
     loaded_mlp = torch.jit.load(mlp_pth).to(device)
     loaded_mean = np.loadtxt(mean_file, dtype=np.float32)[0]
@@ -77,10 +84,10 @@ def main(args):
     clip_obs = 10
 
     action_mean = np.array([0.05,  0.8, -1.4, -0.05,  0.8, -1.4, 0.05,  0.8, -1.4,-0.05,  0.8, -1.4], dtype=np.float32)
-    # Kp = 35
-    # Kd = 0.6
+    #Kp = 60
+    #Kd = 1
     Kp = 80
-    Kd = 4
+    Kd = 2
 
     act_history = deque([np.zeros((1, 12)) for _ in range(4)], maxlen=4)
     
@@ -115,11 +122,27 @@ def main(args):
     
     step = 0
     latent_p = None
+    motiontime = 0
     with torch.no_grad():
         while args.real or conn.viewer.is_running():
-            start_time = time.time()
+            motiontime +=1 
+            # time.sleep(0.002)
 
-            push_history(obs_history, to_observation(conn.wait_latest_state(), act_history))
+            start_time = time.time()            
+
+            if motiontime % 2 == 0:
+                state = conn.wait_latest_state(flag = True)
+                push_history(obs_history, to_observation(conn.wait_latest_state(flag = True), act_history))
+                # ===== logger
+                tick = state.tick
+                torque_vector_real = [state.motorState[i].tauEst for i in range(12)]
+                position_vector_real = [state.motorState[i].q for i in range(12)]
+                csv_fill(tick, torque_vector_real, position_vector_real, '/home/none/rl_go1/scripts/motorstate.csv')
+                print(motiontime)
+                # ===== logger  
+            else:
+                push_history(obs_history, to_observation(conn.wait_latest_state(), act_history))
+
             obs = np.concatenate(
                 [np.concatenate(obs_history), np.zeros(28, dtype=np.float32)]
             )
