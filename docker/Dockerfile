@@ -65,8 +65,9 @@ RUN echo "conda activate rl_go" >> ~/.bashrc
 WORKDIR /home
 
 ENV PATH=/root/miniconda3/bin:$PATH
-COPY docker/rl_go.yml .
-RUN conda env create -n rl_go --file /home/rl_go.yml
+RUN conda create -n rl_go 
+# COPY docker/rl_go.yml .
+# RUN conda env create -n rl_go --file /home/rl_go.yml
 
 COPY docker/build.sh .
 COPY . rl_go1

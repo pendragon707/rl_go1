@@ -9,9 +9,8 @@ import mujoco
 import mujoco.viewer
 
 import sys
-# sys.path.append("../../../submodules/free-dog-sdk/")
+
 sys.path.append("./submodules/free-dog-sdk/")
-# from ucl.lowCmd import lowCmd
 from ucl.lowState import lowState
 
 import src.robots.simulation.sim_constants as constants

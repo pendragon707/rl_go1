@@ -1,5 +1,8 @@
 #!/bin/bash
 
+pip install cbor2 mujoco crcmod
+# conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
+
 cd /home/rl_go1/submodules/unitree_legged_sdk
 rm -rf build
 mkdir -p build

@@ -3,7 +3,7 @@
 После клонирования репозитория устанавливаем следующие зависимости, если не установлены:
 ```
 sudo snap install plotjuggler
-pip install cbor2 mujoco
+pip install cbor2 mujoco crcmod
 conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
 ```
 Далее подгружаем сабмодули:
