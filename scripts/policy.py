@@ -67,15 +67,15 @@ def main(args):
     # mean_file = Path(os.getcwd()) / 'models/model_kv/mean1200.csv'
     # var_file = Path(os.getcwd()) / 'models/model_kv/var1200.csv'
 
-    prop_enc_pth = Path(os.getcwd()) / 'models/model_05_03/prop_encoder_1200.pt'
-    mlp_pth = Path(os.getcwd()) / 'models/model_05_03/mlp_1200.pt'
-    mean_file = Path(os.getcwd()) / 'models/model_05_03/mean1200.csv'
-    var_file = Path(os.getcwd()) / 'models/model_05_03/var1200.csv'
+    # prop_enc_pth = Path(os.getcwd()) / 'models/model_05_03/prop_encoder_1200.pt'
+    # mlp_pth = Path(os.getcwd()) / 'models/model_05_03/mlp_1200.pt'
+    # mean_file = Path(os.getcwd()) / 'models/model_05_03/mean1200.csv'
+    # var_file = Path(os.getcwd()) / 'models/model_05_03/var1200.csv'
 
-    # prop_enc_pth = Path(os.getcwd()) / 'models/model_12k+basep/prop_encoder_1200.pt'
-    # mlp_pth = Path(os.getcwd()) / 'models/model_12k+basep/mlp_1200.pt'
-    # mean_file = Path(os.getcwd()) / 'models/model_12k+basep/mean1200.csv'
-    # var_file = Path(os.getcwd()) / 'models/model_12k+basep/var1200.csv'
+    prop_enc_pth = Path(os.getcwd()) / 'models/model_16k_dagger_1200/prop_encoder_1200.pt'
+    mlp_pth = Path(os.getcwd()) / 'models/model_16k_dagger_1200/mlp_1200.pt'
+    mean_file = Path(os.getcwd()) / 'models/model_16k_dagger_1200/mean1200.csv'
+    var_file = Path(os.getcwd()) / 'models/model_16k_dagger_1200/var1200.csv'
 
     prop_loaded_encoder = torch.jit.load(prop_enc_pth).to(device)
     loaded_mlp = torch.jit.load(mlp_pth).to(device)
@@ -84,8 +84,8 @@ def main(args):
     clip_obs = 10
 
     action_mean = np.array([0.05,  0.8, -1.4, -0.05,  0.8, -1.4, 0.05,  0.8, -1.4,-0.05,  0.8, -1.4], dtype=np.float32)
-    #Kp = 60
-    #Kd = 1
+    # Kp = 35
+    # Kd = 0.6
     Kp = 80
     Kd = 2
 
@@ -131,8 +131,8 @@ def main(args):
             start_time = time.time()            
 
             if motiontime % 2 == 0:
-                state = conn.wait_latest_state(flag = True)
-                push_history(obs_history, to_observation(conn.wait_latest_state(flag = True), act_history))
+                state = conn.wait_latest_state()
+                push_history(obs_history, to_observation(conn.wait_latest_state(), act_history))
                 # ===== logger
                 tick = state.tick
                 torque_vector_real = [state.motorState[i].tauEst for i in range(12)]
