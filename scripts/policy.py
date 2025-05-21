@@ -77,10 +77,15 @@ def main(args):
     # mean_file = Path(os.getcwd()) / 'models/model_16k_dagger_1200/mean1200.csv'
     # var_file = Path(os.getcwd()) / 'models/model_16k_dagger_1200/var1200.csv'
 
-    prop_enc_pth = Path(os.getcwd()) / 'models/arma/prop_encoder_1200.pt'
-    mlp_pth = Path(os.getcwd()) / 'models/arma/mlp_18000.pt'
-    mean_file = Path(os.getcwd()) / 'models/arma/mean1200.csv'
-    var_file = Path(os.getcwd()) / 'models/arma/var1200.csv'
+    # prop_enc_pth = Path(os.getcwd()) / 'models/arma/prop_encoder_1200.pt'
+    # mlp_pth = Path(os.getcwd()) / 'models/arma/mlp_18000.pt'
+    # mean_file = Path(os.getcwd()) / 'models/arma/mean1200.csv'
+    # var_file = Path(os.getcwd()) / 'models/arma/var1200.csv'
+
+    prop_enc_pth = Path(os.getcwd()) / 'models/stairs1/prop_encoder_1200.pt'
+    mlp_pth = Path(os.getcwd()) / 'models/stairs1/mlp_18000.pt'
+    mean_file = Path(os.getcwd()) / 'models/stairs1/mean1200.csv'
+    var_file = Path(os.getcwd()) / 'models/stairs1/var1200.csv'
 
     prop_loaded_encoder = torch.jit.load(prop_enc_pth).to(device)
     loaded_mlp = torch.jit.load(mlp_pth).to(device)
