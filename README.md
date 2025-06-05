@@ -3,9 +3,10 @@
 После клонирования репозитория устанавливаем следующие зависимости, если не установлены:
 ```
 sudo snap install plotjuggler
-pip install cbor2 mujoco crcmod
+pip install cbor2 mujoco crcmod pynput==1.5.0
 conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
 ```
+
 Далее подгружаем сабмодули:
 ```
 git submodule update --init --recursive
@@ -15,7 +16,7 @@ pip install -e submodules/free-dog-sdk/
 
 Запускаем код поднятия робота:
 ```
-python3 ./src/standup.py
+python3 ./scripts/standup.py
 ```
 Если выдает ошибку, то попробуйте следующую команду и повторите предыдущую команду:
 ```
