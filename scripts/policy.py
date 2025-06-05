@@ -46,6 +46,18 @@ def to_observation(state, action_history):
 
 
 def normalize_observation(obs, loaded_mean, loaded_var, clip_obs):
+    print( type(obs) )
+    print( type(loaded_mean) )
+    print( type(loaded_var) )
+
+    print(obs.shape)
+    print(loaded_mean.shape)
+    print(loaded_var.shape)
+
+    obs = np.array(obs, dtype=np.float32)
+    loaded_mean = np.array(loaded_mean, dtype=np.float32)
+    loaded_var = np.array(loaded_var, dtype=np.float32)
+
     return np.clip(
         (obs - loaded_mean) / np.sqrt(loaded_var + 1e-8),
         -clip_obs,
@@ -77,10 +89,10 @@ def main(args):
     # mean_file = Path(os.getcwd()) / 'models/model_16k_dagger_1200/mean1200.csv'
     # var_file = Path(os.getcwd()) / 'models/model_16k_dagger_1200/var1200.csv'
 
-    # prop_enc_pth = Path(os.getcwd()) / 'models/arma/prop_encoder_1200.pt'
-    # mlp_pth = Path(os.getcwd()) / 'models/arma/mlp_18000.pt'
-    # mean_file = Path(os.getcwd()) / 'models/arma/mean1200.csv'
-    # var_file = Path(os.getcwd()) / 'models/arma/var1200.csv'
+    # prop_enc_pth = Path(os.getcwd()) / 'models/rot_exp4_dagger/prop_encoder_1200.pt'
+    # mlp_pth = Path(os.getcwd()) / 'models/rot_exp4_dagger/mlp_1200.pt'
+    # mean_file = Path(os.getcwd()) / 'models/rot_exp4_dagger/mean1200.csv'
+    # var_file = Path(os.getcwd()) / 'models/rot_exp4_dagger/var1200.csv'
 
     prop_enc_pth = Path(os.getcwd()) / 'models/stairs1/prop_encoder_1200.pt'
     mlp_pth = Path(os.getcwd()) / 'models/stairs1/mlp_18000.pt'
@@ -108,11 +120,11 @@ def main(args):
 
     if args.real and args.aliengo:        
         conn = RealAlienGo()
-        conn.start()   
+        # conn.start()   
 
     elif args.real:        
         conn = RealGo1()
-        conn.start()   
+        # conn.start()   
 
     else:
         conn = Simulation(config) 
@@ -120,7 +132,9 @@ def main(args):
             conn.set_keyframe(3)
         else:
             conn.set_keyframe(0)    
-        conn.start()
+        # conn.start()
+
+    conn.start()
 
     if not args.standpos:
         standup(conn, None)
