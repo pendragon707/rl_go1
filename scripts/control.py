@@ -149,21 +149,24 @@ class StandState:
         if self.next_state is not None:
             return self
         
-        if key.char == 'a':
-            self.key_a.reset()
-            return self.key_a
-        
-        if key.char == 'd':
-            self.key_d.reset()
-            return self.key_d
-        
-        if key.char == 'h':
-            self.key_h.reset()
-            return self.key_h
-        
-        if key.char == 'k':
-            self.key_k.reset()
-            return self.key_k
+        try:
+            if key.char == 'a':
+                self.key_a.reset()
+                return self.key_a
+            
+            if key.char == 'd':
+                self.key_d.reset()
+                return self.key_d
+            
+            if key.char == 'h':
+                self.key_h.reset()
+                return self.key_h
+            
+            if key.char == 'k':
+                self.key_k.reset()
+                return self.key_k
+        except:
+            pass
         
         return self
 
@@ -171,7 +174,7 @@ class StandState:
         if self.cycles == 0:
             self.init_q = utils.q_vec(state)
             
-        q_step = utils.interpolate(self.init_q, self.stand_command.q, self.cycles, total_cycles=self.total_cycles)
+        q_step, flag = utils.interpolate(self.init_q, self.stand_command.q, self.cycles, total_cycles=self.total_cycles)
         self.cycles += 1
 
         next_state = self
@@ -189,7 +192,6 @@ def main(args):
 
     if args.real and args.aliengo:        
         conn = RealAlienGo()
-        # conn.start()   
     elif args.real:
         conn = RealGo1()
     else:
@@ -203,10 +205,10 @@ def main(args):
 
     forward_path = Path(os.getcwd()) / 'models/model_16k_dagger_1200'
     backward_path = Path(os.getcwd()) / 'models/back_kv'
-    # left_path = Path(os.getcwd()) / 'models/left'
-    # right_path = Path(os.getcwd()) / 'models/right'
-    left_path = Path(os.getcwd()) / 'models/model_05_03'
-    right_path = Path(os.getcwd()) / 'models/model_05_03'
+    left_path = Path(os.getcwd()) / 'models/rot_exp4_dagger'
+    right_path = Path(os.getcwd()) / 'models/right'
+    # left_path = Path(os.getcwd()) / 'models/model_05_03'
+    # right_path = Path(os.getcwd()) / 'models/model_05_03'
     
     forward = PolicyState(forward_path)
     backward = PolicyState(backward_path)
@@ -220,8 +222,8 @@ def main(args):
     
     stand.key_d = forward
     stand.key_a = backward
-    stand.key_h = right
-    stand.key_k = left
+    stand.key_h = left
+    stand.key_k = right
 
     forward.key_s = stand
     forward.key_a = backward_after_stand
@@ -251,13 +253,14 @@ def main(args):
 
     conn.start()
     if not args.standpos:
-        state = standup(conn)
+        # state = standup(conn)
+        state, command = standup(conn)
     
     while args.real or conn.viewer.is_running():
         start_time = time.time()
         state = conn.wait_latest_state()
         cmd, current_state = current_state.process(state)
-        conn.send(cmd.robot_cmd())
+        conn.send(cmd)
 
         if pressed_key[0] is not None:
             current_state = current_state.press_key(pressed_key[0])

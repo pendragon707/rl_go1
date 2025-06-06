@@ -47,7 +47,7 @@ def standup(conn, viewer = None):
         phase_cycles += 1
         time.sleep(0.01)
 
-    return state
+    return state, None
 
 def standup_2(conn : RealAlienGo, viewer = None):
     phase = 0
@@ -76,7 +76,7 @@ def standup_2(conn : RealAlienGo, viewer = None):
         phase_cycles += 1
         time.sleep(0.01)
 
-    return state
+    return state, None
 
 def main(args):
     config.ENABLE_SIMULATION = True
