@@ -2,6 +2,8 @@
 
 После клонирования репозитория устанавливаем следующие зависимости, если не установлены:
 ```
+conda create --name rl_go
+conda activate rl_go
 sudo snap install plotjuggler
 pip install cbor2 mujoco crcmod pynput==1.5.0
 conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
