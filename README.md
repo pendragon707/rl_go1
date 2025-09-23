@@ -10,18 +10,11 @@ git submodule update --init --recursive
 2. Build docker
 Внутри директории ```rl_go1``` запускаем
 ```bash
-docker build -t rl_go -f docker/Dockerfile .
-```
-
-3. Start Docker
-Внутри директории ```rl_go1```
-
-```bash
 xhost si:localuser:root
 
-docker run --rm -it -p 8082:8082 --ipc=host --net=host -v .:/workspace/rl_go1 --volume=$HOME/.Xauthority:/root/.Xauthority:rw 
--e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged rl_go bash
+docker-compose up --build
 ```
+
 Дальше можно подключиться к запущенному контейнеру через bash (`docker attach`) или через VSCode.
 
 ## Запуск скриптов и политик в симуляторе Mujoco

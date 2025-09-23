@@ -1,8 +1,37 @@
 version: '3.4'
 
 services:
-  rlgo1:
-    image: nonpenguin/rlgo1
+  rl_go:
     build:
-      context: .
+      context: .      
       dockerfile: ./docker/Dockerfile
+      args:        
+        PYTORCH_CUDA_VERSION: 12.1   # Or 11.8, 12.4, etc.      
+    image: rl_go
+    container_name: rl_go_dev
+    runtime: nvidia  # Enables GPU access (equivalent to --gpus all in newer setups)
+    privileged: true
+    stdin_open: true
+    tty: true
+    command: bash
+
+    ports:
+      - "8082:8082"
+
+    ipc: host
+    network_mode: host
+    
+    environment:
+      - DISPLAY=${DISPLAY}
+    
+    volumes:
+      - .:/workspace/rl_go1
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${HOME}/.Xauthority:/root/.Xauthority:rw
+
+    # Security opt if needed (e.g., for mujoco or low-level access)
+    security_opt:
+      - seccomp:unconfined
+
+    # Ensure restart policy or other configs as needed
+    # restart: unless-stopped
