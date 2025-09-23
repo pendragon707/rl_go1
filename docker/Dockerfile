@@ -1,5 +1,5 @@
 FROM ubuntu:24.04
-LABEL Name=rlgo1 Version=0.0.1
+LABEL Name=rl_go1 Version=0.0.1
 
 RUN apt-get update &&  apt-get install -y --no-install-recommends \
     git \
@@ -62,7 +62,7 @@ RUN echo "source /root/miniconda3/bin/activate" >> ~/.bashrc
 RUN echo "conda init" >> ~/.bashrc
 RUN echo "conda activate rl_go" >> ~/.bashrc
 
-WORKDIR /home
+WORKDIR /workspace
 
 ENV PATH=/root/miniconda3/bin:$PATH
 RUN conda create -n rl_go 
@@ -70,7 +70,7 @@ RUN conda create -n rl_go
 # RUN conda env create -n rl_go --file /home/rl_go.yml
 
 COPY docker/build.sh .
-COPY . rl_go1
+# COPY . rl_go1
 
-RUN ["chmod", "+x", "/home/build.sh"]
-RUN "/home/build.sh"
+RUN ["chmod", "+x", "/workspace/build.sh"]
+RUN "/workspace/build.sh"

@@ -1,29 +1,55 @@
 # rl_go1
 
-После клонирования репозитория устанавливаем следующие зависимости, если не установлены:
-```
-conda create --name rl_go
-conda activate rl_go
-sudo snap install plotjuggler
-pip install cbor2 mujoco crcmod pynput==1.5.0
-conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
-```
+## Установка через docker
 
-Далее подгружаем сабмодули:
-```
+1. Перед стартом, на хосте
+```bash
 git submodule update --init --recursive
-pip install -e submodules/free-dog-sdk/
 ```
-Если хотим запускать в симуляторе, то изменяем в standup.py real = False, если на реальном роботе, то real = True
 
-Запускаем код поднятия робота:
+2. Build docker
+Внутри директории ```rl_go1``` запускаем
+```bash
+docker build -t rl_go -f Dockerfile .
 ```
+
+3. Start Docker
+Внутри директории ```rl_go1```
+
+```bash
+xhost si:localuser:root
+
+docker run --rm -it -p 8082:8082 --ipc=host --net=host -v .:/rl_go1 --volume=$HOME/.Xauthority:/root/.Xauthority:rw 
+-e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged rl_go bash
+```
+Дальше можно подключиться к запущенному контейнеру через bash (`docker attach`) или через VSCode.
+
+## Запуск скриптов и политик в симуляторе Mujoco
+
+Скрипты из директории ./scripts без флагов запускаются в симуляторе mujoco. 
+
+Поднятие робота на ноги в симуляторе mujoco:
+```bash
 python3 ./scripts/standup.py
 ```
-Если выдает ошибку, то попробуйте следующую команду и повторите предыдущую команду:
-```
-export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
-```
+
+Запуск политики в симуляторе mujoco: 
+```python3 ./src/policy.py```
+
+## Запуск скриптов и политик на Aliengo
+
+Соедините ноутбук и робота Aliengo Ethernet-проводом. Если адрес порта автоматически был выставлен неверно, то устанавливаем Network->Wired->IPv4->Manual адрес 192.168.123.200 с маской 255.255.255.0.
+
+Проверьте, что робот пингуется:
+
+```ping 192.168.123.10```
+
+Для запуска на Aliengo добавьте флаги `-r -a`.
+
+Запуск политики на реальном роботе:  
+```python3 ./src/policy.py -r -a```
+
+## Возможные решения проблем
 
 Проблемы с MESA для симмуляции [link](https://stackoverflow.com/questions/72110384/libgl-error-mesa-loader-failed-to-open-iris):
 ```
