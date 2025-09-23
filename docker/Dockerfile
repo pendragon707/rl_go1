@@ -58,25 +58,32 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -
     rm -f miniconda.sh
 
 ENV PATH=/root/miniconda3/bin:$PATH
+RUN conda tos accept --channel https://repo.anaconda.com/pkgs/main && \
+    conda tos accept --channel https://repo.anaconda.com/pkgs/r
+
 RUN conda create -n rl_go 
 # COPY docker/rl_go.yml .
 # RUN conda env create -n rl_go --file /home/rl_go.yml
+
+ARG PYTORCH_CUDA_VERSION=12.1
+ENV PYTORCH_CUDA_VERSION=${PYTORCH_CUDA_VERSION}
+
+ENV CONDA_DEFAULT_ENV=rl_go
+ENV CONDA_PREFIX=/root/miniconda3/envs/rl_go
+ENV PATH=/root/miniconda3/envs/rl_go/bin:/root/miniconda3/bin:$PATH
+
+# Source conda.sh to enable `conda activate`
+RUN . /root/miniconda3/etc/profile.d/conda.sh && \
+    conda activate rl_go && \
+    conda install -y \
+        pytorch torchvision torchaudio pytorch-cuda=${PYTORCH_CUDA_VERSION} \
+        -c pytorch -c nvidia && \
+    pip install cbor2 mujoco crcmod
 
 RUN echo "export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6" >> ~/.bashrc
 RUN echo "source /root/miniconda3/bin/activate" >> ~/.bashrc
 RUN echo "conda init" >> ~/.bashrc
 RUN echo "conda activate rl_go" >> ~/.bashrc
-
-ARG PYTORCH_CUDA_VERSION=12.1
-ENV PYTORCH_CUDA_VERSION=${PYTORCH_CUDA_VERSION}
-RUN conda init && conda activate rl_go 
-RUN conda install -y \
-    pytorch \
-    torchvision \
-    torchaudio \
-    pytorch-cuda=${PYTORCH_CUDA_VERSION} \
-    -c pytorch -c nvidia
-RUN pip install cbor2 mujoco crcmod
 
 WORKDIR /workspace
 

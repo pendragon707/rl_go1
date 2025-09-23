@@ -10,7 +10,7 @@ git submodule update --init --recursive
 2. Build docker
 Внутри директории ```rl_go1``` запускаем
 ```bash
-docker build -t rl_go -f Dockerfile .
+docker build -t rl_go -f docker/Dockerfile .
 ```
 
 3. Start Docker
