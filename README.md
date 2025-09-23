@@ -19,7 +19,7 @@ docker build -t rl_go -f Dockerfile .
 ```bash
 xhost si:localuser:root
 
-docker run --rm -it -p 8082:8082 --ipc=host --net=host -v .:/rl_go1 --volume=$HOME/.Xauthority:/root/.Xauthority:rw 
+docker run --rm -it -p 8082:8082 --ipc=host --net=host -v .:/workspace/rl_go1 --volume=$HOME/.Xauthority:/root/.Xauthority:rw 
 -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged rl_go bash
 ```
 Дальше можно подключиться к запущенному контейнеру через bash (`docker attach`) или через VSCode.
