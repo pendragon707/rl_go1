@@ -17,6 +17,36 @@ docker-compose up --build
 
 Дальше можно подключиться к запущенному контейнеру через bash (`docker attach`) или через VSCode.
 
+## Установка без docker
+
+После клонирования репозитория устанавливаем следующие зависимости, если не установлены:
+```
+conda create -n rl_go
+conda activate rl_go
+sudo snap install plotjuggler
+pip install cbor2 mujoco
+conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
+```
+Далее подгружаем сабмодули:
+```
+git submodule update --init --recursive
+pip install -e submodules/free-dog-sdk/
+```
+Затем нужно перейти к подмодулю с unitree_legged_sdk и выполнить readme оттуда (убедитесь, что установили lcm и остальные указанные там зависимости. 
+```
+cd submodules/unitree_legged_sdk
+mkdir -p build
+cd build
+cmake ..
+make 
+
+cd submodules/unitree_legged_sdk/python_wrapper
+mkdir -p build
+cd build
+cmake ..
+make 
+```
+
 ## Запуск скриптов и политик в симуляторе Mujoco
 
 Скрипты из директории ./scripts без флагов запускаются в симуляторе mujoco. 
