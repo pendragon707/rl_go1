@@ -19,10 +19,13 @@ docker build -t rl_go -f docker/Dockerfile .
 ```bash
 xhost si:localuser:root
 
-docker run --rm -it -p 8082:8082 --ipc=host --net=host -v .:/workspace/rl_go1 --volume=$HOME/.Xauthority:/root/.Xauthority:rw 
--e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged rl_go bash
+docker-compose up
 ```
 Дальше можно подключиться к запущенному контейнеру через bash (`docker attach`) или через VSCode.
+
+```
+./build.sh
+```
 
 ## Запуск скриптов и политик в симуляторе Mujoco
 
@@ -34,7 +37,7 @@ python3 ./scripts/standup.py
 ```
 
 Запуск политики в симуляторе mujoco: 
-```python3 ./src/policy.py```
+```python3 ./scripts/policy.py -m <model_dir_name>```
 
 ## Запуск скриптов и политик на Aliengo
 
@@ -47,7 +50,7 @@ python3 ./scripts/standup.py
 Для запуска на Aliengo добавьте флаги `-r -a`.
 
 Запуск политики на реальном роботе:  
-```python3 ./src/policy.py -r -a```
+```python3 ./scripts/policy.py -r -a -m <model_dir_name>```
 
 ## Возможные решения проблем
 
@@ -59,4 +62,8 @@ mv libstd* backup  # Put all libstdc++ files into the folder, including soft lin
 cp /usr/lib/x86_64-linux-gnu/libstdc++.so.6  ./ # Copy the c++ dynamic link library of the system here
 ln -s libstdc++.so.6 libstdc++.so
 ln -s libstdc++.so.6 libstdc++.so.6.0.19
+```
+
+```
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
 ```
