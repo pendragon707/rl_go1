@@ -1,8 +1,33 @@
 version: '3.4'
 
 services:
-  rlgo1:
-    image: nonpenguin/rlgo1
+  rl_go:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
+      args:
+        # You can change this value as needed
+        PYTORCH_CUDA_VERSION: 12.1   # Or 11.8, 12.4, etc.
+    image: rl_go
+    privileged: true
+    stdin_open: true
+    tty: true
+    command: bash
+
+    # runtime: nvidia
+
+    ipc: host
+    network_mode: host
+
+    environment:
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - NVIDIA_VISIBLE_DEVICES=all    
+      - DISPLAY=${DISPLAY}
+
+    volumes:
+      - .:/workspace/rl_go1
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${HOME}/.Xauthority:/root/.Xauthority:rw
+
+    security_opt:
+      - seccomp:unconfined
