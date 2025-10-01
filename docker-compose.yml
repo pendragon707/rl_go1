@@ -2,8 +2,9 @@ version: '3.4'
 
 services:
   rl_go:
+  rl_go:
     build:
-      context: .
+      context: .      
       dockerfile: ./docker/Dockerfile
       args:
         # You can change this value as needed
