@@ -12,7 +12,8 @@ git submodule update --init --recursive
 ```bash
 xhost si:localuser:root
 
-docker-compose up
+export PYTORCH_CUDA_VERSION=$(ls /usr/local | grep -E 'cuda-[0-9]+\.[0-9]+$' | head -n1 | sed 's/cuda-//')
+docker compose up --build
 ```
 
 Дальше можно подключиться к запущенному контейнеру через bash (`docker attach`) или через VSCode.
