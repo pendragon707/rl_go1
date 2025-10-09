@@ -94,10 +94,15 @@ def main(args):
     # mean_file = Path(os.getcwd()) / 'models/rot_exp4_dagger/mean1200.csv'
     # var_file = Path(os.getcwd()) / 'models/rot_exp4_dagger/var1200.csv'
 
-    prop_enc_pth = Path(os.getcwd()) / 'models/stairs1/prop_encoder_1200.pt'
-    mlp_pth = Path(os.getcwd()) / 'models/stairs1/mlp_18000.pt'
-    mean_file = Path(os.getcwd()) / 'models/stairs1/mean1200.csv'
-    var_file = Path(os.getcwd()) / 'models/stairs1/var1200.csv'
+    # prop_enc_pth = Path(os.getcwd()) / 'models/stairs1/prop_encoder_1200.pt'
+    # mlp_pth = Path(os.getcwd()) / 'models/stairs1/mlp_18000.pt'
+    # mean_file = Path(os.getcwd()) / 'models/stairs1/mean1200.csv'
+    # var_file = Path(os.getcwd()) / 'models/stairs1/var1200.csv'
+
+    prop_enc_pth = Path(os.getcwd()) / 'models' / args.model / 'prop_encoder_1200.pt'
+    mlp_pth = Path(os.getcwd()) / 'models' / args.model / 'mlp_18000.pt'
+    mean_file = Path(os.getcwd()) / 'models' / args.model / 'mean1200.csv'
+    var_file = Path(os.getcwd()) / 'models' / args.model / 'var1200.csv'
 
     prop_loaded_encoder = torch.jit.load(prop_enc_pth).to(device)
     loaded_mlp = torch.jit.load(mlp_pth).to(device)
@@ -207,4 +212,5 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--real', action='store_true')
     parser.add_argument('-a', '--aliengo', action='store_true')
     parser.add_argument('-s', '--standpos', action='store_true')
+    parser.add_argument('-m', '--model', action='store_true', default='model_05_03')
     main(parser.parse_args())
