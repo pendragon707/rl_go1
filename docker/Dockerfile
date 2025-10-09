@@ -75,7 +75,8 @@ ENV PATH=/root/miniconda3/envs/rl_go/bin:/root/miniconda3/bin:$PATH
 # Source conda.sh to enable `conda activate`
 RUN . /root/miniconda3/etc/profile.d/conda.sh && \
     conda activate rl_go && \
-    conda install -y \
+    conda install -y mamba -c conda-forge && \
+    mamba install -y \
         pytorch torchvision torchaudio pytorch-cuda=${PYTORCH_CUDA_VERSION} \
         -c pytorch -c nvidia && \
     pip install cbor2 mujoco crcmod
