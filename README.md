@@ -12,10 +12,44 @@ git submodule update --init --recursive
 ```bash
 xhost si:localuser:root
 
-docker-compose up --build
+docker-compose up
 ```
 
 Дальше можно подключиться к запущенному контейнеру через bash (`docker attach`) или через VSCode.
+
+```
+./build.sh
+```
+
+## Установка без docker
+
+После клонирования репозитория устанавливаем следующие зависимости, если не установлены:
+```
+conda create -n rl_go
+conda activate rl_go
+sudo snap install plotjuggler
+pip install cbor2 mujoco
+conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
+```
+Далее подгружаем сабмодули:
+```
+git submodule update --init --recursive
+pip install -e submodules/free-dog-sdk/
+```
+Затем нужно перейти к подмодулю с unitree_legged_sdk и выполнить readme оттуда (убедитесь, что установили lcm и остальные указанные там зависимости. 
+```
+cd submodules/unitree_legged_sdk
+mkdir -p build
+cd build
+cmake ..
+make 
+
+cd submodules/unitree_legged_sdk/python_wrapper
+mkdir -p build
+cd build
+cmake ..
+make 
+```
 
 ## Запуск скриптов и политик в симуляторе Mujoco
 
@@ -27,7 +61,7 @@ python3 ./scripts/standup.py
 ```
 
 Запуск политики в симуляторе mujoco: 
-```python3 ./src/policy.py```
+```python3 ./scripts/policy.py -m <model_dir_name>```
 
 ## Запуск скриптов и политик на Aliengo
 
@@ -40,7 +74,7 @@ python3 ./scripts/standup.py
 Для запуска на Aliengo добавьте флаги `-r -a`.
 
 Запуск политики на реальном роботе:  
-```python3 ./src/policy.py -r -a```
+```python3 ./scripts/policy.py -r -a -m <model_dir_name>```
 
 ## Возможные решения проблем
 
@@ -52,4 +86,8 @@ mv libstd* backup  # Put all libstdc++ files into the folder, including soft lin
 cp /usr/lib/x86_64-linux-gnu/libstdc++.so.6  ./ # Copy the c++ dynamic link library of the system here
 ln -s libstdc++.so.6 libstdc++.so
 ln -s libstdc++.so.6 libstdc++.so.6.0.19
+```
+
+```
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
 ```

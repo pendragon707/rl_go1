@@ -13,7 +13,7 @@ from collections import deque
 
 from scripts.standup import standup
 
-from motor_data_csv_writer import csv_fill
+# from motor_data_csv_writer import csv_fill
 
 import src.utils as utils
 from src.command import Command
@@ -46,17 +46,9 @@ def to_observation(state, action_history):
 
 
 def normalize_observation(obs, loaded_mean, loaded_var, clip_obs):
-    print( type(obs) )
-    print( type(loaded_mean) )
-    print( type(loaded_var) )
-
-    print(obs.shape)
-    print(loaded_mean.shape)
-    print(loaded_var.shape)
-
-    obs = np.array(obs, dtype=np.float32)
-    loaded_mean = np.array(loaded_mean, dtype=np.float32)
-    loaded_var = np.array(loaded_var, dtype=np.float32)
+    # obs = np.array(obs, dtype=np.float32)
+    # loaded_mean = np.array(loaded_mean, dtype=np.float32)
+    # loaded_var = np.array(loaded_var, dtype=np.float32)
 
     return np.clip(
         (obs - loaded_mean) / np.sqrt(loaded_var + 1e-8),
@@ -74,33 +66,8 @@ def push_history(deq, e):
 def main(args):
     device = 'cpu'
 
-    # prop_enc_pth = Path(os.getcwd()) / 'models/model_kv/prop_encoder_1200.pt'
-    # mlp_pth = Path(os.getcwd()) / 'models/model_kv/mlp_1200.pt'
-    # mean_file = Path(os.getcwd()) / 'models/model_kv/mean1200.csv'
-    # var_file = Path(os.getcwd()) / 'models/model_kv/var1200.csv'
-
-    # prop_enc_pth = Path(os.getcwd()) / 'models/model_05_03/prop_encoder_1200.pt'
-    # mlp_pth = Path(os.getcwd()) / 'models/model_05_03/mlp_1200.pt'
-    # mean_file = Path(os.getcwd()) / 'models/model_05_03/mean1200.csv'
-    # var_file = Path(os.getcwd()) / 'models/model_05_03/var1200.csv'
-
-    # prop_enc_pth = Path(os.getcwd()) / 'models/model_16k_dagger_1200/prop_encoder_1200.pt'
-    # mlp_pth = Path(os.getcwd()) / 'models/model_16k_dagger_1200/mlp_1200.pt'
-    # mean_file = Path(os.getcwd()) / 'models/model_16k_dagger_1200/mean1200.csv'
-    # var_file = Path(os.getcwd()) / 'models/model_16k_dagger_1200/var1200.csv'
-
-    # prop_enc_pth = Path(os.getcwd()) / 'models/rot_exp4_dagger/prop_encoder_1200.pt'
-    # mlp_pth = Path(os.getcwd()) / 'models/rot_exp4_dagger/mlp_1200.pt'
-    # mean_file = Path(os.getcwd()) / 'models/rot_exp4_dagger/mean1200.csv'
-    # var_file = Path(os.getcwd()) / 'models/rot_exp4_dagger/var1200.csv'
-
-    # prop_enc_pth = Path(os.getcwd()) / 'models/stairs1/prop_encoder_1200.pt'
-    # mlp_pth = Path(os.getcwd()) / 'models/stairs1/mlp_18000.pt'
-    # mean_file = Path(os.getcwd()) / 'models/stairs1/mean1200.csv'
-    # var_file = Path(os.getcwd()) / 'models/stairs1/var1200.csv'
-
     prop_enc_pth = Path(os.getcwd()) / 'models' / args.model / 'prop_encoder_1200.pt'
-    mlp_pth = Path(os.getcwd()) / 'models' / args.model / 'mlp_18000.pt'
+    mlp_pth = Path(os.getcwd()) / 'models' / args.model / 'mlp_1200.pt'
     mean_file = Path(os.getcwd()) / 'models' / args.model / 'mean1200.csv'
     var_file = Path(os.getcwd()) / 'models' / args.model / 'var1200.csv'
 
@@ -111,9 +78,7 @@ def main(args):
     clip_obs = 10
 
     action_mean = np.array([0.05,  0.8, -1.4, -0.05,  0.8, -1.4, 0.05,  0.8, -1.4,-0.05,  0.8, -1.4], dtype=np.float32)
-    # Kp = 35
-    # Kd = 0.6
-    Kp = 80
+    Kp = 60
     Kd = 2
 
     act_history = deque([np.zeros((1, 12)) for _ in range(4)], maxlen=4)
@@ -125,11 +90,15 @@ def main(args):
 
     if args.real and args.aliengo:        
         conn = RealAlienGo()
-        # conn.start()   
+        conn.start() 
+
+        viewer = None
 
     elif args.real:        
         conn = RealGo1()
-        # conn.start()   
+        conn.start()  
+
+        viewer = None 
 
     else:
         conn = Simulation(config) 
@@ -137,12 +106,12 @@ def main(args):
             conn.set_keyframe(3)
         else:
             conn.set_keyframe(0)    
-        # conn.start()
+        conn.start()
 
-    conn.start()
+        viewer = conn.viewer
 
     if not args.standpos:
-        standup(conn, None)
+        standup(conn, viewer)
 
     print("stand")
     
@@ -159,18 +128,20 @@ def main(args):
 
             start_time = time.time()            
 
-            if motiontime % 2 == 0:
-                state = conn.wait_latest_state()
-                push_history(obs_history, to_observation(conn.wait_latest_state(), act_history))
-                # ===== logger
-                tick = state.tick
-                torque_vector_real = [state.motorState[i].tauEst for i in range(12)]
-                position_vector_real = [state.motorState[i].q for i in range(12)]
-                csv_fill(tick, torque_vector_real, position_vector_real, '/home/none/rl_go1/scripts/motorstate.csv')
-                print(motiontime)
-                # ===== logger  
-            else:
-                push_history(obs_history, to_observation(conn.wait_latest_state(), act_history))
+            # if motiontime % 2 == 0:
+            #     state = conn.wait_latest_state()
+            #     push_history(obs_history, to_observation(conn.wait_latest_state(), act_history))
+            #     # ===== logger
+            #     tick = state.tick
+            #     torque_vector_real = [state.motorState[i].tauEst for i in range(12)]
+            #     position_vector_real = [state.motorState[i].q for i in range(12)]
+            #     csv_fill(tick, torque_vector_real, position_vector_real, '/home/none/rl_go1/scripts/motorstate.csv')
+            #     print(motiontime)
+            #     # ===== logger  
+            # else:
+            #     push_history(obs_history, to_observation(conn.wait_latest_state(), act_history))
+
+            push_history(obs_history, to_observation(conn.wait_latest_state(), act_history))
 
             obs = np.concatenate(
                 [np.concatenate(obs_history), np.zeros(28, dtype=np.float32)]
@@ -190,13 +161,6 @@ def main(args):
             action = act_history[0][0] * 0.4 + action_mean
             
             command = Command(q=action, Kp=[Kp]*12, Kd=[Kd]*12)
-            # cmd.clamp_q()
-
-            # if args.aliengo:
-            #     conn.set_cmd(command)
-            #     conn.send()
-            # else:
-            #     conn.send(command.robot_cmd())
             conn.send(command)
                        
             duration = time.time() - start_time
