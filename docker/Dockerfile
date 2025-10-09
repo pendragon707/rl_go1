@@ -62,8 +62,6 @@ RUN conda tos accept --channel https://repo.anaconda.com/pkgs/main && \
     conda tos accept --channel https://repo.anaconda.com/pkgs/r
 
 RUN conda create -n rl_go 
-# COPY docker/rl_go.yml .
-# RUN conda env create -n rl_go --file /home/rl_go.yml
 
 ARG PYTORCH_CUDA_VERSION=12.1
 ENV PYTORCH_CUDA_VERSION=${PYTORCH_CUDA_VERSION}
@@ -89,7 +87,6 @@ RUN echo "conda activate rl_go" >> ~/.bashrc
 WORKDIR /workspace
 
 COPY docker/build.sh .
-# COPY . rl_go1
 
 RUN ["chmod", "+x", "/workspace/build.sh"]
 RUN "/workspace/build.sh"

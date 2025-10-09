@@ -176,5 +176,5 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--real', action='store_true')
     parser.add_argument('-a', '--aliengo', action='store_true')
     parser.add_argument('-s', '--standpos', action='store_true')
-    parser.add_argument('-m', '--model', default='model_05_03')
+    parser.add_argument('-m', '--model', action='store_true', default='model_05_03')
     main(parser.parse_args())
