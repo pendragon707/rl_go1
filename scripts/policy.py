@@ -13,8 +13,6 @@ from collections import deque
 
 from scripts.standup import standup
 
-# from motor_data_csv_writer import csv_fill
-
 import src.utils as utils
 from src.command import Command
 from src.robots import RealAlienGo, RealGo1
@@ -46,9 +44,6 @@ def to_observation(state, action_history):
 
 
 def normalize_observation(obs, loaded_mean, loaded_var, clip_obs):
-    # obs = np.array(obs, dtype=np.float32)
-    # loaded_mean = np.array(loaded_mean, dtype=np.float32)
-    # loaded_var = np.array(loaded_var, dtype=np.float32)
 
     return np.clip(
         (obs - loaded_mean) / np.sqrt(loaded_var + 1e-8),
@@ -127,19 +122,6 @@ def main(args):
             # time.sleep(0.002)
 
             start_time = time.time()            
-
-            # if motiontime % 2 == 0:
-            #     state = conn.wait_latest_state()
-            #     push_history(obs_history, to_observation(conn.wait_latest_state(), act_history))
-            #     # ===== logger
-            #     tick = state.tick
-            #     torque_vector_real = [state.motorState[i].tauEst for i in range(12)]
-            #     position_vector_real = [state.motorState[i].q for i in range(12)]
-            #     csv_fill(tick, torque_vector_real, position_vector_real, '/home/none/rl_go1/scripts/motorstate.csv')
-            #     print(motiontime)
-            #     # ===== logger  
-            # else:
-            #     push_history(obs_history, to_observation(conn.wait_latest_state(), act_history))
 
             push_history(obs_history, to_observation(conn.wait_latest_state(), act_history))
 
