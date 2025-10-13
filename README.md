@@ -19,7 +19,7 @@ docker compose up --build
 Дальше можно подключиться к запущенному контейнеру через bash (`docker attach`) или через VSCode.
 
 ```
-./build.sh
+./workspace/build.sh
 ```
 
 ## Установка без docker
