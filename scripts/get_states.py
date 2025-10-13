@@ -18,20 +18,24 @@ motor_names = ['FR_0', 'FR_1', 'FR_2',
 def main(args):
     config.ENABLE_SIMULATION = True
 
-    # if not args.real:
-    #     pass
-    #     # conn = Simulation(config)
-    #     # conn.set_keyframe(0)
-    #     # conn.start()
+    if not args.real:
+        conn = Simulation(config)
+        conn.set_keyframe(0)
+        conn.start()
         
-    #     # viewer = conn.viewer
-    # elif args.aliengo:        
-    #     conn = RealAlienGo()
-    #     conn.start()
+        viewer = conn.viewer
 
-    # else:
-    conn = RealGo1()
-    conn.start()  
+    elif args.aliengo:        
+        conn = RealAlienGo()
+        conn.start()
+
+        viewer = None
+        
+    else:
+        conn = RealGo1()
+        conn.start()  
+
+        viewer = None
 
     time.sleep(0.2)
 
